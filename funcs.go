@@ -1,21 +1,27 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "strings"
-    "os/exec"
-    "strconv"
+	//    "fmt"
+	"log"
+	"os/exec"
+	"strconv"
+	"strings"
 )
+
 //blkid
 //sudo fdisk -l
-type disk struct{
+type Disk struct{
 	Filesystem string
 	Mem int
 	Used int
 	Avaible int
 	UsePercent string
 	Mount string
+}
+
+type Format struct{
+Title string
+Todos []Disk
 }
 
 func GetInfoSystem() (bar [][]string) {
@@ -32,8 +38,8 @@ func GetInfoSystem() (bar [][]string) {
     return renglones
 }
 
-func FormaterDiskInfo(foo [][]string)(list []disk){
-	listu:=make([]disk,len(foo))
+func FormaterDiskInfo(foo [][]string)(bar Format){
+	listu:=make([]Disk,len(foo))
 	for i:=0;i<len(foo);i++{
 		listu[i].Filesystem=foo[i][0]
 		listu[i].Mem,_=strconv.Atoi(foo[i][1])
@@ -42,10 +48,15 @@ func FormaterDiskInfo(foo [][]string)(list []disk){
 		listu[i].UsePercent=foo[i][4]
 		listu[i].Mount=foo[i][5]
 	}
-	return listu
+	ret:=Format{Title:"Discos",Todos:listu}
+	return ret
 }
-func Mount(disco disk, MountPoint string)  {
-	os.exec("sudo","mount",disco.Filesystem,MountPoint)
+
+func Mount(disco Disk, MountPoint string)  {
+	exec.Command("sudo","mount",disco.Filesystem,MountPoint)
 }
-func main()  {
+
+func Umount(disco Disk)  {
+	exec.Command("sudo","umount",disco.Mount)
 }
+
