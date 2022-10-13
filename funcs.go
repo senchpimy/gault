@@ -27,11 +27,6 @@ Title string
 Todos []Disk_DF
 }
 
-type Format_lsblk struct{
-Title string
-Todos System_lsblk
-}
-
 type Disk_lbslk struct{
 	Name string 
 	Size string 
@@ -78,12 +73,10 @@ func Umount(disco Disk_DF)  {
 	exec.Command("sudo","umount",disco.Mount)
 }
 
-func GetDisks() (foo Format_lsblk){
+func GetDisks() (foo System_lsblk){
 	cmd := exec.Command("lsblk", "-J", "-oNAME,SIZE,TYPE,MOUNTPOINTS","-l")
 	content, _ := cmd.CombinedOutput()
 	var System System_lsblk
 	json.Unmarshal(content, &System)
-
-	ret:=Format_lsblk{Title:"TEST",Todos:System}
-	return ret
+	return System
 }
