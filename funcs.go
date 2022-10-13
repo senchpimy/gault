@@ -1,16 +1,19 @@
 package main
 
 import (
-	//    "fmt"
 	"log"
 	"os/exec"
 	"strconv"
 	"strings"
+	"encoding/json"
 )
 
-//blkid
-//sudo fdisk -l
-type Disk struct{
+//sudo blkid:UUID
+//sudo fdisk -l: mucha info
+//lsblk: Discos
+//df: sistemas ya montados
+
+type Disk_DF struct{
 	Filesystem string
 	Mem int
 	Used int
@@ -19,9 +22,24 @@ type Disk struct{
 	Mount string
 }
 
-type Format struct{
+type Format_DF struct{
 Title string
-Todos []Disk
+Todos []Disk_DF
+}
+
+type Format_lsblk struct{
+Title string
+Todos System_lsblk
+}
+
+type Disk_lbslk struct{
+	Name string 
+	Size string 
+	Type string
+}
+
+type System_lsblk struct{
+	Blockdevices []Disk_lbslk
 }
 
 func GetInfoSystem() (bar [][]string) {
@@ -38,8 +56,8 @@ func GetInfoSystem() (bar [][]string) {
     return renglones
 }
 
-func FormaterDiskInfo(foo [][]string)(bar Format){
-	listu:=make([]Disk,len(foo))
+func FormaterDiskInfo(foo [][]string)(bar Format_DF){
+	listu:=make([]Disk_DF,len(foo))
 	for i:=0;i<len(foo);i++{
 		listu[i].Filesystem=foo[i][0]
 		listu[i].Mem,_=strconv.Atoi(foo[i][1])
@@ -48,15 +66,24 @@ func FormaterDiskInfo(foo [][]string)(bar Format){
 		listu[i].UsePercent=foo[i][4]
 		listu[i].Mount=foo[i][5]
 	}
-	ret:=Format{Title:"Discos",Todos:listu}
+	ret:=Format_DF{Title:"Discos",Todos:listu}
 	return ret
 }
 
-func Mount(disco Disk, MountPoint string)  {
+func Mount(disco Disk_DF, MountPoint string)  {
 	exec.Command("sudo","mount",disco.Filesystem,MountPoint)
 }
 
-func Umount(disco Disk)  {
+func Umount(disco Disk_DF)  {
 	exec.Command("sudo","umount",disco.Mount)
 }
 
+func GetDisks() (foo Format_lsblk){
+	cmd := exec.Command("lsblk", "-J", "-oNAME,SIZE,TYPE,MOUNTPOINTS","-l")
+	content, _ := cmd.CombinedOutput()
+	var System System_lsblk
+	json.Unmarshal(content, &System)
+
+	ret:=Format_lsblk{Title:"TEST",Todos:System}
+	return ret
+}

@@ -1,42 +1,48 @@
 package main
 
 import (
-	"fmt"
+	//	"fmt"
 	"net/http"
 
 	//"os"
 	//	"os/exec"
+	"io/ioutil"
 	"html/template"
 	//	"fmt"
 	//	"log"
 )
 
-type Todo struct {
-    Title string
-    Done  bool
+func readHtmlFromFile(fileName string) ([]byte) {
+
+    bs, _ := ioutil.ReadFile(fileName)
+
+    return bs
 }
 
-
-type TodoPageData struct {
-    PageTitle string
-    Todos     []Todo
-}
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("<h1>Hello World!</h1>"))
+	w.Write(readHtmlFromFile("./index.html"))
 }
 
-func Discos(w http.ResponseWriter ,r *http.Request)  {
+func DiscosMontados(w http.ResponseWriter ,r *http.Request)  {
 	Data:=FormaterDiskInfo(GetInfoSystem())
 	t:=template.Must(template.ParseFiles("./discos.html"))
 	t.Execute(w,Data)
 }
 
+func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {
+	Data:=GetDisks()
+	t:=template.Must(template.ParseFiles("./discosDisponibles.html"))
+	t.Execute(w,Data)
+}
+
+
 func main() {
 	port := ":3000"
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", indexHandler)
-	mux.HandleFunc("/Discos", Discos)
+	mux.HandleFunc("/discos", DiscosMontados)
+	mux.HandleFunc("/discosDisponibles", DiscosDisponibles)
 	http.ListenAndServe(port, mux)
 
 }
