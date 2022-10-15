@@ -1,7 +1,20 @@
 <!DOCTYPE html>
 <html>
 	<h1>{{.Title}} Ya Montados</h1>
-	{{range .Todos}}
-	<li>{{.Filesystem}}</li> <b>{{.Mem}}</b>
-	{{end}}
+	<table>
+		<tr>
+			<th>Filesystem</th>
+			<th>Mem</th>
+			<th>Mount</th>
+			<th>UsePercent</th>
+		</tr>
+		{{range .Todos}}
+		<tr>
+			<td>{{.Filesystem}}</td>
+			<td>{{.Mem}}</td>
+			<td>{{.Mount}}</td>
+			<td>{{.UsePercent}}</td>
+		</tr>
+		{{end}}
+	</table>
 </html>
