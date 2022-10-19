@@ -6,9 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-
 	//"os/exec"
-
 	//"github.com/go-ini/ini"
 )
 
@@ -28,6 +26,9 @@ import (
 // #######todo##########
 //hosts allow = 192.168.0.0/16
 //hosts deny= 0.0.0.0/0
+
+//	ADD USER
+// smbpasswd -axde USR PASSW
 type Configuration struct{
 Value string
 Variable string
@@ -67,8 +68,8 @@ func ExistSambaConf()  {
 		}
 }
 
-func CreateConfiguration(Configuration ConfigurationDefinition){
-	title:="[" +Configuration.Title +"]\n"
+func CreateConfiguration(Configuration ConfigurationDefinition)(foo []string){
+	title:="\n[" +Configuration.Title +"]\n"
 	elementsLen:=len(Configuration.Contents)+1
 	s:=make([]string,elementsLen)
 	s[0]=title
@@ -76,17 +77,32 @@ func CreateConfiguration(Configuration ConfigurationDefinition){
 	s[i+1]=Configuration.Contents[i].Variable+" = "+Configuration.Contents[i].Value+"\n"
 	}
 
-	for i:=0;i<elementsLen;i++{
-	fmt.Printf("%s",s[i])
-	}
+	return s
+
+
 
 }
 
+func WriteShareConfToSambaConf(bar []string){
+	 f, err := os.OpenFile("/etc/samba/smb.conf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+    if err != nil {
+        log.Fatal(err)
+    }
+	for i:=0;i<len(bar);i++{
+    if _, err := f.Write([]byte(bar[i])); err != nil {
+        log.Fatal(err)
+	}
+    }
+    if err := f.Close(); err != nil {
+        log.Fatal(err)
+    }
+
+}
 
 func main()  {
  var test Configuration
- test.Variable="Configureacion1"
- test.Value="Valor"
+ test.Variable="Perro1"
+ test.Value="Lala"
  var test2 Configuration
  test2.Variable="Configureacion2"
  test2.Value="Valor2"
@@ -96,12 +112,6 @@ func main()  {
   s[0]=test
   s[1]=test2
  All.Contents=s
- CreateConfiguration(All)
-//	file, err := ini.Load("/etc/samba/smb.conf")
-//	   if err != nil {
-//	        fmt.Printf("Fail to read file: %v", err)
-//	        os.Exit(1)
-//	    }
-//	fmt.Println(file.SectionStrings())
-//	file.NewSection("new section")
+ testu:= CreateConfiguration(All)
+ WriteShareConfToSambaConf(testu)
 }
