@@ -6,13 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 
-	//"os/exec"
 	"github.com/go-ini/ini"
 )
-
-//import "github.com/vaughan0/go-ini"
 
 //	GLOBAL
 //host allow: Solo computadoras en la red local
@@ -31,14 +29,24 @@ import (
 
 //	ADD USER
 // smbpasswd -axde USR PASSW
+
+//	Commands
+//sudo systemctl start smb
+//sudo systemctl enable smb
+//sudo systemctl start nmb
+//sudo systemctl enable nmb
 type Configuration struct{
-Value string
 Variable string
+Value string
 }
 
-type ConfigurationDefinition struct{
+type SectionDefinition struct{
 Title string
 Contents []Configuration
+}
+
+type ConfigurationsStruct struct{
+Sections []SectionDefinition
 }
 
 func WriteToFile(Texto string, File string, location int) {
@@ -56,21 +64,20 @@ func WriteToFile(Texto string, File string, location int) {
 	}
 }
 
-func ReadFile(file string) {
-	data, err := ioutil.ReadFile(file)
-	if err != nil {
-		log.Panicf("failed reading data from file: %s", err)
-	}
-	fmt.Printf("\nFile Content: %s", data)	
-}
+//func ReadFile(file string) {
+//	data, err := ioutil.ReadFile(file)
+//	if err != nil {
+//		log.Panicf("failed reading data from file: %s", err)
+//	}
+//}
 
-func ExistSambaConf()  {
+func ExistSambaConf()  { //completado
 	if _, err := os.Stat("/etc/samba/smb.conf"); errors.Is(err, os.ErrNotExist) {
 		log.Fatal("Samba Config File 'smb.conf' does not exist")
 		}
 }
 
-func CreateConfiguration(Configuration ConfigurationDefinition)(foo []string){
+func CreateConfiguration(Configuration SectionDefinition)(foo []string){ //Completado
 	title:="\n[" +Configuration.Title +"]\n"
 	elementsLen:=len(Configuration.Contents)+1
 	s:=make([]string,elementsLen)
@@ -81,11 +88,9 @@ func CreateConfiguration(Configuration ConfigurationDefinition)(foo []string){
 
 	return s
 
-
-
 }
 
-func WriteShareConf(bar []string){
+func WriteShareConf(bar []string){ //Completado
 	 f, err := os.OpenFile("/etc/samba/smb.conf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
     if err != nil {
         log.Fatal(err)
@@ -102,70 +107,90 @@ func WriteShareConf(bar []string){
 
 }
 
-func DeleteShare(share string)(error string){
+func DeleteShare(share string)(error error){
 	var start int = -1
 	var end int = -1
 
 	 data, err := ioutil.ReadFile("./holo")
-    if err != nil {
+	if err != nil {
+	    log.Fatal(err)
+	}
+	
+	file := string(data)
+	temp := strings.Split(file, "\n")
+	
+	 for index, item := range temp {
+	         if strings.Contains(item, share){start=index;break}
+	}
+	if start==-1{return errors.New("No Share Named "+share+" Found")}
+	for index, item := range temp {
+	        if strings.Contains(item, "[",) && index>start{end=index}
+	
+	   }
+	
+        newFile, err := os.Create("./holo2")
+	if err != nil {
         log.Fatal(err)
-    }
+    	}
+    	defer newFile.Close()
+	
+	for index, item:=range temp{
+		if index<start || index>end-1{
+                   _, err := newFile.Write([]byte(item+"\n"))
+		    if err != nil {
+		        log.Fatal(err)
+		    }
+		}
+	}
 
-    file := string(data)
-    temp := strings.Split(file, "\n")
-
-     for index, item := range temp {
-	     if strings.Contains(item, share){start=index;break}
-    }
-    if start==-1{return "No Share Named "+share+" Found"}
-    for index2, item2 := range temp {
-	    if strings.Contains(item2, "[",) && index2>start{end=index2}
-
-       }
-   
-fmt.Println(start)
-fmt.Println(end)
-return ""
+return nil
 }
 
-func GetAllConfigurations()(foo []ConfigurationDefinition){
-	file,err:=ini.Load("/etc/samba/smb.conf")
+func GetAllConfigurations()(foo ConfigurationsStruct){
+	file,err:=ini.Load("./smb.conf")
 	 if err != nil {
         fmt.Printf("Fail to read file: %v", err)
         os.Exit(1)
     }
-    configurations:=make([]ConfigurationDefinition,len(file.SectionStrings()))
+    Configurations:=make([]SectionDefinition,len(file.SectionStrings()))
 
     for i,section:=range file.SectionStrings(){
-	configurations[i].Title=section
+	Configurations[i].Title=section
     	Variables:=make([]Configuration,len(file.Section(section).KeyStrings()))
 	for j,key:=range file.Section(section).KeyStrings(){
 		Variables[j].Variable=key
 		Variables[j].Value=file.Section(section).Key(key).String()
 		
 	}
-		configurations[i].Contents=Variables
+		Configurations[i].Contents=Variables
     }
-    return configurations
-
+    var Configs ConfigurationsStruct
+    Configs.Sections=Configurations
+    return Configs
 }
-     
-func main()  {
-// var test Configuration
-// test.Variable="Perro1"
-// test.Value="Lala"
-// var test2 Configuration
-// test2.Variable="Configureacion2"
-// test2.Value="Valor2"
-// var All ConfigurationDefinition
-// All.Title="Configuracion Total"
-//  s := make([]Configuration, 2)
-//  s[0]=test
-//  s[1]=test2
-// All.Contents=s
-// testu:= CreateConfiguration(All)
-// WriteShareConf(testu)
 
+ func StartSamba(){
+	
+    cmd := exec.Command("systemctl", "start", "smb")
+    err := cmd.Run()
+    if err != nil {log.Fatal(err)}
+    cmd2 := exec.Command("systemctl", "start", "nmb")
+    err2 := cmd2.Run()
+    if err2 != nil {log.Fatal(err2)}
+ }
+
+ func EnableSamba(){
+	
+    cmd := exec.Command("systemctl", "enable", "smb")
+    err := cmd.Run()
+    if err != nil {log.Fatal(err)}
+    cmd2 := exec.Command("systemctl", "enable", "smb")
+    err2 := cmd2.Run()
+    if err2 != nil {log.Fatal(err2)}
+ }
+
+//func main()  {
+//
 //DeleteShare("test")
-GetAllConfigurations()
-}
+////GetAllConfigurations()
+//}

@@ -1,15 +1,9 @@
 package main
 
 import (
-	//	"fmt"
 	"net/http"
-
-	//"os"
-	//	"os/exec"
 	"io/ioutil"
 	"html/template"
-	//	"fmt"
-	//	"log"
 )
 
 func readHtmlFromFile(fileName string) ([]byte) {
@@ -36,6 +30,11 @@ func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {
 	t.Execute(w,Data)
 }
 
+func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
+	Configuration:=GetAllConfigurations()
+	t:=template.Must(template.ParseFiles("./samba.html"))
+	t.Execute(w,Configuration)
+}
 
 func main() {
 	port := ":3000"
@@ -43,6 +42,7 @@ func main() {
 	mux.HandleFunc("/", indexHandler)
 	mux.HandleFunc("/discos", DiscosMontados)
 	mux.HandleFunc("/discosDisponibles", DiscosDisponibles)
+	mux.HandleFunc("/SambaConfi", SambaConfiguration)
 	http.ListenAndServe(port, mux)
 
 }
