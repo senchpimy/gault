@@ -7,8 +7,9 @@ import (
 	"log"
 	"os"
 	"strings"
+
 	//"os/exec"
-	//"github.com/go-ini/ini"
+	"github.com/go-ini/ini"
 )
 
 //import "github.com/vaughan0/go-ini"
@@ -126,6 +127,28 @@ fmt.Println(start)
 fmt.Println(end)
 return ""
 }
+
+func GetAllConfigurations()(foo []ConfigurationDefinition){
+	file,err:=ini.Load("/etc/samba/smb.conf")
+	 if err != nil {
+        fmt.Printf("Fail to read file: %v", err)
+        os.Exit(1)
+    }
+    configurations:=make([]ConfigurationDefinition,len(file.SectionStrings()))
+
+    for i,section:=range file.SectionStrings(){
+	configurations[i].Title=section
+    	Variables:=make([]Configuration,len(file.Section(section).KeyStrings()))
+	for j,key:=range file.Section(section).KeyStrings(){
+		Variables[j].Variable=key
+		Variables[j].Value=file.Section(section).Key(key).String()
+		
+	}
+		configurations[i].Contents=Variables
+    }
+    return configurations
+
+}
      
 func main()  {
 // var test Configuration
@@ -142,5 +165,7 @@ func main()  {
 // All.Contents=s
 // testu:= CreateConfiguration(All)
 // WriteShareConf(testu)
-DeleteShare("test")
+
+//DeleteShare("test")
+GetAllConfigurations()
 }
