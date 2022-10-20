@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	//"os/exec"
 	//"github.com/go-ini/ini"
 )
@@ -83,11 +84,12 @@ func CreateConfiguration(Configuration ConfigurationDefinition)(foo []string){
 
 }
 
-func WriteShareConfToSambaConf(bar []string){
+func WriteShareConf(bar []string){
 	 f, err := os.OpenFile("/etc/samba/smb.conf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
     if err != nil {
         log.Fatal(err)
     }
+    defer f.Close()
 	for i:=0;i<len(bar);i++{
     if _, err := f.Write([]byte(bar[i])); err != nil {
         log.Fatal(err)
@@ -99,19 +101,46 @@ func WriteShareConfToSambaConf(bar []string){
 
 }
 
+func DeleteShare(share string)(error string){
+	var start int = -1
+	var end int = -1
+
+	 data, err := ioutil.ReadFile("./holo")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    file := string(data)
+    temp := strings.Split(file, "\n")
+
+     for index, item := range temp {
+	     if strings.Contains(item, share){start=index;break}
+    }
+    if start==-1{return "No Share Named "+share+" Found"}
+    for index2, item2 := range temp {
+	    if strings.Contains(item2, "[",) && index2>start{end=index2}
+
+       }
+   
+fmt.Println(start)
+fmt.Println(end)
+return ""
+}
+     
 func main()  {
- var test Configuration
- test.Variable="Perro1"
- test.Value="Lala"
- var test2 Configuration
- test2.Variable="Configureacion2"
- test2.Value="Valor2"
- var All ConfigurationDefinition
- All.Title="Configuracion Total"
-  s := make([]Configuration, 2)
-  s[0]=test
-  s[1]=test2
- All.Contents=s
- testu:= CreateConfiguration(All)
- WriteShareConfToSambaConf(testu)
+// var test Configuration
+// test.Variable="Perro1"
+// test.Value="Lala"
+// var test2 Configuration
+// test2.Variable="Configureacion2"
+// test2.Value="Valor2"
+// var All ConfigurationDefinition
+// All.Title="Configuracion Total"
+//  s := make([]Configuration, 2)
+//  s[0]=test
+//  s[1]=test2
+// All.Contents=s
+// testu:= CreateConfiguration(All)
+// WriteShareConf(testu)
+DeleteShare("test")
 }
