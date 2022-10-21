@@ -35,6 +35,7 @@ import (
 //sudo systemctl enable smb
 //sudo systemctl start nmb
 //sudo systemctl enable nmb
+
 type Configuration struct{
 Variable string
 Value string
