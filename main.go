@@ -1,10 +1,10 @@
 package main
 
 import (
-	"net/http"
-	"io/ioutil"
 	"fmt"
 	"html/template"
+	"io/ioutil"
+	"net/http"
 )
 
 var mainpage = "/"
@@ -13,11 +13,10 @@ var discosmontadospage = "/discosDisponibles"
 var sambapage = "/SambaConfi"
 
 func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
-    w.WriteHeader(status)
-    if status == http.StatusNotFound {
-        fmt.Fprint(w, "custom 404")
-        fmt.Fprint(w, Logged)
-    }
+	w.WriteHeader(status)
+	if status == http.StatusNotFound {
+		w.Write(readHtmlFromFile("./404.html"))
+	}
 }
 
 func readHtmlFromFile(fileName string) ([]byte) {
@@ -41,9 +40,23 @@ func DiscosMontados(w http.ResponseWriter ,r *http.Request)  {
         errorHandler(w, r, http.StatusNotFound)
         return
     }
-	Data:=FormaterDiskInfo(GetInfoSystem())
-	t:=template.Must(template.ParseFiles("./discos.html"))
-	t.Execute(w,Data)
+	switch r.Method {
+	case "GET":
+		Data:=FormaterDiskInfo(GetInfoSystem())
+		t:=template.Must(template.ParseFiles("./discos.html"))
+		t.Execute(w,Data)
+	case "POST":
+		if err := r.ParseForm(); err !=nil{
+			fmt.Fprintf(w,"ParseForm() err: v%",err)
+			return
+		}
+
+		fmt.Fprintf(w,"Post form website r.postfrom =%v \n",r.PostForm)
+		name:=r.FormValue("name")
+		if name=="hola"{TestXset();fmt.Println("AAAAAAAAAA")}
+	default: fmt.Fprintf(w,"Error")
+	}
+
 }
 
 func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {

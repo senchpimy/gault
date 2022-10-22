@@ -1,9 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 	<body>
+		<b>Discos Disponibles Montados</b>
+		<ul>
+			{{range .Blockdevices}}
+			<li><b>{{.Name}}</b></li>
+			{{end}}
+		</ul>
+
 		<b>Discos Disponibles para Montar</b>
-		{{range .Blockdevices}}
-		<b>{{.Name}}</b>
-		{{end}}
+		<form>
+		<select>
+			{{range .Blockdevices}}
+			<option value="{{.Name}}">{{.Name}}</option>
+			{{end}}
+		</select>
+		  <input type="submit" value="Submit">
+		</form>
 	</body>
 </html>

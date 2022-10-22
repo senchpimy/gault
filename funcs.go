@@ -73,6 +73,10 @@ func Umount(disco Disk_DF)  {
 	exec.Command("sudo","umount",disco.Mount)
 }
 
+func TestXset()  {
+	exec.Command("xsetroot","-name","test")
+}
+
 func GetDisks() (foo System_lsblk){
 	cmd := exec.Command("lsblk", "-J", "-oNAME,SIZE,TYPE,MOUNTPOINTS","-l")
 	content, _ := cmd.CombinedOutput()

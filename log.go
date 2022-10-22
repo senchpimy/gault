@@ -1,4 +1,4 @@
-//package main
+package main
 //
 //import (
 //	"crypto/sha512"
@@ -11,7 +11,7 @@
 //	"strings"
 //)
 //
-//var Logged bool=false
+var Logged bool=false
 //
 //type User struct{
 //User_name string
@@ -34,7 +34,7 @@
 //		sha_512.Write([]byte(name))
 //		fmt.Fprintf(w,"value = %s\n",name)
 //		fmt.Fprintf(w,"value in sha_512 = \t%s",base64.StdEncoding.EncodeToString(sha_512.Sum(nil)))
-//		GetPasswordConfirmation("nigga",name)
+//		GetPasswordConfirmation("test",name)
 //		fmt.Fprintf(w,"value = %b\n",Logged)
 //
 //
@@ -100,5 +100,5 @@
 //	mux := http.NewServeMux()
 //	mux.HandleFunc("/", login)
 //	http.ListenAndServe(port, mux)
-//	//GetPasswordConfirmation("nigga","cjeslapolla")
+//	//GetPasswordConfirmation("test","cjeslapolla")
 //}
