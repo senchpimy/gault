@@ -51,9 +51,9 @@ func DiscosMontados(w http.ResponseWriter ,r *http.Request)  {
 			return
 		}
 
-		fmt.Fprintf(w,"Post form website r.postfrom =%v \n",r.PostForm)
-		name:=r.FormValue("name")
-		if name=="hola"{TestXset();fmt.Println("AAAAAAAAAA")}
+	//	fmt.Fprintf(w,"Post form website r.postfrom =%v \n",r.PostForm)
+		//name:=r.FormValue("name")
+		//if name=="hula"{}
 	default: fmt.Fprintf(w,"Error")
 	}
 

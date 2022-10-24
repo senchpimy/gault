@@ -4,7 +4,7 @@
 		<b>Discos Disponibles Montados</b>
 		<ul>
 			{{range .Blockdevices}}
-			<li><b>{{.Name}}</b></li>
+			<li><b>{{.Name}}	{{.Rm}}		{{.Size}}	{{.Uuid}}</b></li>
 			{{end}}
 		</ul>
 
@@ -12,7 +12,9 @@
 		<form>
 		<select>
 			{{range .Blockdevices}}
+			{{if .Rm}}
 			<option value="{{.Name}}">{{.Name}}</option>
+			{{end}}
 			{{end}}
 		</select>
 		  <input type="submit" value="Submit">

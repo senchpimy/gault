@@ -6,12 +6,11 @@ import (
 	"strconv"
 	"strings"
 	"encoding/json"
+	"io/ioutil"
+	"os"
 )
 
-//sudo blkid:UUID
 //sudo fdisk -l: mucha info
-//lsblk: Discos
-//df: sistemas ya montados
 
 type Disk_DF struct{
 	Filesystem string
@@ -20,6 +19,11 @@ type Disk_DF struct{
 	Avaible int
 	UsePercent string
 	Mount string
+}
+
+type Disk struct{
+	Uuid string
+	MountPoint string
 }
 
 type Format_DF struct{
@@ -31,6 +35,8 @@ type Disk_lbslk struct{
 	Name string 
 	Size string 
 	Type string
+	Rm bool
+	Uuid string
 }
 
 type System_lsblk struct{
@@ -65,22 +71,47 @@ func FormaterDiskInfo(foo [][]string)(bar Format_DF){
 	return ret
 }
 
-func Mount(disco Disk_DF, MountPoint string)  {
-	exec.Command("sudo","mount",disco.Filesystem,MountPoint)
+func Mount(disco string, MountPoint string)  {
+	cmd:=exec.Command("sudo","mount",disco,MountPoint)
+	cmd.CombinedOutput()
 }
 
-func Umount(disco Disk_DF)  {
-	exec.Command("sudo","umount",disco.Mount)
-}
-
-func TestXset()  {
-	exec.Command("xsetroot","-name","test")
+func Umount(disco string)  {
+	cmd:=exec.Command("sudo","umount",disco)
+	cmd.CombinedOutput()
 }
 
 func GetDisks() (foo System_lsblk){
-	cmd := exec.Command("lsblk", "-J", "-oNAME,SIZE,TYPE,MOUNTPOINTS","-l")
+	cmd := exec.Command("lsblk", "-J", "-oNAME,SIZE,TYPE,MOUNTPOINTS,RM,UUID","-l")
 	content, _ := cmd.CombinedOutput()
 	var System System_lsblk
 	json.Unmarshal(content, &System)
 	return System
 }
+
+func CreateParentDir(){
+	cmd := exec.Command("mkdir", "/run/gault", "-p")
+	cmd.CombinedOutput()
+}
+
+func GetUUIDandMount()(foo []Disk){
+    file, err := os.Open("./disks")
+    if err != nil {
+        log.Fatal(err)
+    }
+    data, err := ioutil.ReadAll(file)
+    if err != nil {
+        log.Fatal(err)
+    }
+    data_string:=string(data)
+
+    data_split:=strings.Split(data_string,"\n")
+    Disks:=make([]Disk,len(data_split)-1)
+    for index,line:= range data_split[:len(data_split)-1]{
+	    data_from_line:=strings.Split(line,":")
+	    Disks[index].Uuid=data_from_line[1]
+	    Disks[index].MountPoint=data_from_line[0]
+
+    }
+    return Disks
+    }
