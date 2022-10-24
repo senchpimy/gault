@@ -2,14 +2,8 @@ package main
 
 import (
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
-	"strings"
-
-	"github.com/go-ini/ini"
 )
 
 //	GLOBAL

@@ -8,8 +8,8 @@ import (
 )
 
 var mainpage = "/"
-var discospage = "/discos"
-var discosmontadospage = "/discosDisponibles"
+var discospage = "/discosDisponibles"
+var discosmontadospage = "/discos"
 var sambapage = "/SambaConfi"
 
 func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
@@ -36,37 +36,38 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DiscosMontados(w http.ResponseWriter ,r *http.Request)  {
-	    if r.URL.Path != discosmontadospage {
+	if r.URL.Path != discosmontadospage {
+        	errorHandler(w, r, http.StatusNotFound)
+        	return
+	}
+	Data:=FormaterDiskInfo(GetInfoSystem())
+	t:=template.Must(template.ParseFiles("./discos.html"))
+	t.Execute(w,Data)
+}
+
+func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {
+	if r.URL.Path != discospage {
         errorHandler(w, r, http.StatusNotFound)
         return
     }
 	switch r.Method {
 	case "GET":
-		Data:=FormaterDiskInfo(GetInfoSystem())
-		t:=template.Must(template.ParseFiles("./discos.html"))
+		Data:=GetDisks()
+		t:=template.Must(template.ParseFiles("./discosDisponibles.html"))
 		t.Execute(w,Data)
+		fmt.Println("GET")
 	case "POST":
+		fmt.Println("POST")
 		if err := r.ParseForm(); err !=nil{
 			fmt.Fprintf(w,"ParseForm() err: v%",err)
 			return
 		}
 
-	//	fmt.Fprintf(w,"Post form website r.postfrom =%v \n",r.PostForm)
-		//name:=r.FormValue("name")
-		//if name=="hula"{}
+		diskUuid:=r.FormValue("diskselected")
+		VerifyDisk(diskUuid)
+
 	default: fmt.Fprintf(w,"Error")
 	}
-
-}
-
-func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {
-	    if r.URL.Path != discospage {
-        errorHandler(w, r, http.StatusNotFound)
-        return
-    }
-	Data:=GetDisks()
-	t:=template.Must(template.ParseFiles("./discosDisponibles.html"))
-	t.Execute(w,Data)
 }
 
 func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
@@ -77,6 +78,11 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 	Configuration:=GetAllConfigurations()
 	t:=template.Must(template.ParseFiles("./samba.html"))
 	t.Execute(w,Configuration)
+}
+
+func INIT()  {
+	CreateParentDir()
+	MountByUUID()
 }
 
 func main() {

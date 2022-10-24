@@ -4,16 +4,19 @@
 		<b>Discos Disponibles Montados</b>
 		<ul>
 			{{range .Blockdevices}}
-			<li><b>{{.Name}}	{{.Rm}}		{{.Size}}	{{.Uuid}}</b></li>
+			<li><b>{{.Name}}	{{.Rm}}		{{.Size}}	{{.Uuid}} {{.Type}}</b></li>
 			{{end}}
 		</ul>
 
 		<b>Discos Disponibles para Montar</b>
-		<form>
-		<select>
+		<form method="POST">
+		<select  name="diskselected">
+			<option value="null">Select a Disk</option>
 			{{range .Blockdevices}}
 			{{if .Rm}}
-			<option value="{{.Name}}">{{.Name}}</option>
+			{{if eq .Type "part"}}
+			<option value="{{.Uuid}}">{{.Name}}</option>
+			{{end}}
 			{{end}}
 			{{end}}
 		</select>
