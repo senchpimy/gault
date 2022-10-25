@@ -91,12 +91,12 @@ func FormaterDiskInfo(foo [][]string)(bar Format_DF){
 
 func Mount(disco string, MountPoint string)  {
 	_,err:=exec.Command( "mount","/dev/"+disco,MountPoint).Output()
-	if err != nil {CreateError(err)}
+	if err != nil {CreateError(string(err.Error()))}
 }
 
 func Umount(disco string)  {
 	_,err:=exec.Command("umount", disco).Output()
-	if err != nil {CreateError(err)}
+	if err != nil {CreateError(string(err.Error()))}
 }
 
 func GetDisks() (foo System_lsblk){

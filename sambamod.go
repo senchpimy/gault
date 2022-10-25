@@ -41,13 +41,13 @@ Variable string
 Value string
 }
 
-type SectionDefinition struct{
+type Share struct{
 Title string
 Contents []Configuration
 }
 
 type ConfigurationsStruct struct{
-Sections []SectionDefinition
+Sections []Share
 }
 
 func WriteToFile(Texto string, File string, location int) {
@@ -71,7 +71,7 @@ func ExistSambaConf()  { //completado
 		}
 }
 
-func CreateConfiguration(Configuration SectionDefinition)(foo []string){ //Completado
+func CreateConfiguration(Configuration Share)(foo []string){ //Completado
 	title:="\n[" +Configuration.Title +"]\n"
 	elementsLen:=len(Configuration.Contents)+1
 	s:=make([]string,elementsLen)
@@ -85,7 +85,7 @@ func CreateConfiguration(Configuration SectionDefinition)(foo []string){ //Compl
 }
 
 func WriteShareConf(bar []string){ //Completado
-	f, err := os.OpenFile("/etc/samba/smb.conf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile("./smb.conf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 	    log.Fatal(err)
 	}
@@ -166,7 +166,7 @@ func GetAllConfigurations()(foo ConfigurationsStruct){
         fmt.Printf("Fail to read file: %v", err)
         os.Exit(1)
     }
-    Configurations:=make([]SectionDefinition,len(file.SectionStrings()))
+    Configurations:=make([]Share,len(file.SectionStrings()))
 
     for i,section:=range file.SectionStrings(){
 	Configurations[i].Title=section
@@ -203,7 +203,18 @@ func GetAllConfigurations()(foo ConfigurationsStruct){
     if err2 != nil {log.Fatal(err2)}
  }
 
-func main()  {
-
-DeleteShare("test")
+ func Verifyshare(ReceivedShare Share)  {
+	 NewContents:=ReceivedShare.Contents
+ 	if ReceivedShare.Title==""{
+	}else{
+		for index,item:= range ReceivedShare.Contents{
+			if item.Value==""{remove(NewContents,index);continue}
+			if item.Value=="on"{NewContents[index].Value="yes"}
+		}
+	}
+	ReceivedShare.Contents=NewContents
+ }
+func remove(slice []Configuration, s int) []Configuration {
+    return append(slice[:s], slice[s+1:]...)
 }
+

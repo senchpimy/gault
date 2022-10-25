@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 var mainpage = "/"
@@ -92,9 +93,34 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
         errorHandler(w, r, http.StatusNotFound)
         return
     }
-	Configuration:=GetAllConfigurations()
-	t:=template.Must(template.ParseFiles("./samba.html"))
-	t.Execute(w,Configuration)
+	switch r.Method {
+	case "GET":
+		Configuration:=GetAllConfigurations()
+		t:=template.Must(template.ParseFiles("./samba.html"))
+		t.Execute(w,Configuration)
+	case "POST":
+		fmt.Println("POST")
+		if err := r.ParseForm(); err !=nil{
+			fmt.Fprintf(w,"ParseForm() err: v%",err)
+			return
+		}
+
+		var NewShare Share
+		ConfigurationsReceived:=make([]Configuration,9)
+		i:=0
+		for key, element:= range r.Form{
+			if key=="Titulo"{
+				NewShare.Title=r.FormValue("Titulo")
+			}
+			ConfigurationsReceived[i].Variable=key
+			ConfigurationsReceived[i].Value=strings.Join(element," ")
+			i++
+		}
+		NewShare.Contents=ConfigurationsReceived
+		VerifyShare(NewShare)
+
+	default: fmt.Fprintf(w,"Error")
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
