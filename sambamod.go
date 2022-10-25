@@ -214,7 +214,12 @@ func GetAllConfigurations()(foo ConfigurationsStruct){
 	}
 	ReceivedShare.Contents=NewContents
  }
+
 func remove(slice []Configuration, s int) []Configuration {
     return append(slice[:s], slice[s+1:]...)
 }
 
+func AddSambaUser(user string, password string)  {
+	err:=exec.Command("sh","./CreateUser.sh",user, password).Run()
+    	if err != nil {CreateError(err.Error())}
+}
