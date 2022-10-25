@@ -56,8 +56,8 @@ func DiscosMontados(w http.ResponseWriter ,r *http.Request)  {
 			return
 		}
 
-		//diskUuid:=r.FormValue("diskselected")
-		//VerifyDisk(diskUuid)
+		diskUuid:=r.FormValue("diskselected")
+		Umount(diskUuid)
 
 	default: fmt.Fprintf(w,"Error")
 	}

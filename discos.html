@@ -18,16 +18,16 @@
 		</tr>
 		{{end}}
 		{{end}}
-	<h2>Desmontar un Disco</h2>
+		<div>
+		<b>Desmontar un Disco</b>
+		</div>
 	</table>
 		<form method="POST">
 		<select  name="diskselected" action="/discosDisponibles">
 			<option value="null">Select a Disk</option>
 			{{range .Todos}}
-			{{if ne .Mount "/"}}
 			{{if ne .Mem 0 }}
 			<option value="{{.Filesystem}}">{{.Filesystem}}</option>
-			{{end}}
 			{{end}}
 			{{end}}
 		</select>

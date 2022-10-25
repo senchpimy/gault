@@ -91,12 +91,12 @@ func FormaterDiskInfo(foo [][]string)(bar Format_DF){
 
 func Mount(disco string, MountPoint string)  {
 	_,err:=exec.Command( "mount","/dev/"+disco,MountPoint).Output()
-	fmt.Println(err)
+	if err != nil {CreateError(err)}
 }
 
 func Umount(disco string)  {
-	_,err:=exec.Command("umount", "/dev/"+disco).Output()
-	fmt.Println(err)
+	_,err:=exec.Command("umount", disco).Output()
+	if err != nil {CreateError(err)}
 }
 
 func GetDisks() (foo System_lsblk){
@@ -174,20 +174,20 @@ func AddDiskToConfig(disk string, MountPoint string){
 
 
 func VerifyDisk(diskUuid string)  { //Recibe UUID del disco
-	dirname:=CreateMountDir()     //Crea una carpeta en donde se va a montar...
-	by,_:=ioutil.ReadFile("./disks")  //...esta carpeta es unica a la uuid del disco
-	file:=string(by)            
-	fmt.Println(string(by))
-	if strings.Contains(file, diskUuid){
+	if diskUuid!="null"{
+		dirname:=CreateMountDir()         //Crea una carpeta en donde se va a montar...
+		by,_:=ioutil.ReadFile("./disks")  //...esta carpeta es unica a la uuid del disco
+		file:=string(by)            
+		fmt.Println(string(by))
+		if strings.Contains(file, diskUuid){
 		//si el directorio ya existe y el disco ya esta en el archivo de configuracion entonces solo montar
-		MountByFile()
-	}else{
-		//si no agregar a la configuracion y montar
-		AddDiskToConfig(diskUuid,dirname)
-		MountByUUID(diskUuid,dirname)
+			MountByFile()
+		}else{
+			//si no agregar a la configuracion y montar
+			AddDiskToConfig(diskUuid,dirname)
+			MountByUUID(diskUuid,dirname)
+		}
 	}
-	
 }
-
 //func main(){
 //}

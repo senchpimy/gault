@@ -104,7 +104,8 @@ func DeleteShare(share string)(error error){
 	var start int = -1
 	var end int = -1
 
-	 data, err := ioutil.ReadFile("./holo")
+	 //data, err := ioutil.ReadFile("/etc/samba/smb.conf")
+	 data, err := ioutil.ReadFile("./smb.conf")
 	if err != nil {
 	    log.Fatal(err)
 	}
@@ -113,29 +114,49 @@ func DeleteShare(share string)(error error){
 	temp := strings.Split(file, "\n")
 	
 	 for index, item := range temp {
-	         if strings.Contains(item, share){start=index;break}
+	         if strings.Contains(item, share) && strings.Contains(item,"#")==false{start=index;break}
 	}
 	if start==-1{return errors.New("No Share Named "+share+" Found")}
 	for index, item := range temp {
-	        if strings.Contains(item, "[",) && index>start{end=index}
-	
+	        if strings.Contains(item, "[",) && index>start{end=index;break}
 	   }
-	
-        newFile, err := os.Create("./holo2")
+        //newFile, err := os.Create("/etc/samba/smb.conf.after")
+        newFile, err := os.Create("./smb.conf.after")
 	if err != nil {
         log.Fatal(err)
     	}
     	defer newFile.Close()
 	
-	for index, item:=range temp{
-		if index<start || index>end-1{
-                   _, err := newFile.Write([]byte(item+"\n"))
-		    if err != nil {
-		        log.Fatal(err)
-		    }
+	if end==-1{
+		for index, item:=range temp{
+			if index<start {
+	        	   _, err := newFile.Write([]byte(item+"\n"))
+			    if err != nil {
+			        log.Fatal(err)
+			    	}
+			}
+		}
+
+	}else{
+		for index, item:=range temp{
+			if index<start || index>end-1{
+	        	   _, err := newFile.Write([]byte(item+"\n"))
+			    if err != nil {
+			        log.Fatal(err)
+			    	}
+			}
 		}
 	}
 
+
+	//cmd,err:=exec.Command( "mv","/etc/samba/smb.conf","/etc/samba/smb.conf.bak").Output()
+	cmd,err:=exec.Command( "mv","./smb.conf","./smb.conf.bak").Output()
+	if err != nil {log.Fatal(err)}
+	fmt.Println(cmd)
+	//cmd2,err:=exec.Command( "mv","/etc/samba/smb.conf.after","/etc/samba/smb.conf").Output()
+	cmd2,err:=exec.Command( "mv","./smb.conf.after","./smb.conf").Output()
+	if err != nil {log.Fatal(err)}
+	fmt.Println(cmd2)
 return nil
 }
 
@@ -182,8 +203,7 @@ func GetAllConfigurations()(foo ConfigurationsStruct){
     if err2 != nil {log.Fatal(err2)}
  }
 
-//func main()  {
-//
-//DeleteShare("test")
-////GetAllConfigurations()
-//}
+func main()  {
+
+DeleteShare("test")
+}
