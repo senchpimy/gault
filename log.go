@@ -2,7 +2,6 @@ package main
 
 import(
  "time"
- "fmt"
  "os"
  "log"
 )

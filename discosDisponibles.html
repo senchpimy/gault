@@ -10,7 +10,7 @@
 
 		<b>Discos Disponibles para Montar</b>
 		<form method="POST">
-		<select  name="diskselected" action="/">
+		<select  name="diskselected" action="/discosDisponibles">
 			<option value="null">Select a Disk</option>
 			{{range .Blockdevices}}
 			{{if .Rm}}

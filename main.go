@@ -55,7 +55,6 @@ func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {
 		Data:=GetDisks()
 		t:=template.Must(template.ParseFiles("./discosDisponibles.html"))
 		t.Execute(w,Data)
-		fmt.Println("GET")
 	case "POST":
 		fmt.Println("POST")
 		if err := r.ParseForm(); err !=nil{

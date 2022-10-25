@@ -1,20 +1,21 @@
 package main
 
 import (
-	"crypto/md5"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //sudo fdisk -l: mucha info
+
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 type Disk_DF struct{
 	Filesystem string
@@ -61,6 +62,15 @@ func GetInfoSystem() (bar [][]string) {
     return renglones
 }
 
+func randSeq(n int) string {
+	rand.Seed(time.Now().UnixNano())
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
 func FormaterDiskInfo(foo [][]string)(bar Format_DF){
 	listu:=make([]Disk_DF,len(foo))
 	for i:=0;i<len(foo);i++{
@@ -94,17 +104,15 @@ func GetDisks() (foo System_lsblk){
 }
 
 func CreateParentDir(){
-	cmd := exec.Command("mkdir", "/run/gault", "-p")
+	cmd := exec.Command("mkdir", "/run/media/gault", "-p")
 	cmd.CombinedOutput()
 }
 
-func CreateMountDir(dirname string)(foo string){
-	md5:=md5.New()
-	io.WriteString(md5,dirname)
-	dirname=base64.StdEncoding.EncodeToString(md5.Sum(nil))
-	cmd := exec.Command("mkdir", "/run/gault/"+dirname, "-p")
-	cmd.CombinedOutput()
-	return dirname
+func CreateMountDir() string{
+	dirname:=randSeq(10)
+	_, err := exec.Command("mkdir", "/run/media/gault/"+dirname, "-p").Output()
+	fmt.Println(err)
+	return "/run/media/gault/"+dirname
 }
 
 func MountByFile(){
@@ -152,7 +160,7 @@ func AddDiskToConfig(disk string, MountPoint string){
 	    log.Fatal(err)
 	}
 	defer f.Close()
-	if _, err := f.Write([]byte(disk+":"+MountPoint)); err != nil {
+	if _, err := f.Write([]byte(disk+":"+MountPoint+"\n")); err != nil {
 	    log.Fatal(err)
 	    }
 	if err := f.Close(); err != nil {
@@ -161,14 +169,15 @@ func AddDiskToConfig(disk string, MountPoint string){
 
 }
 
+
 func VerifyDisk(diskUuid string)  { //Recibe UUID del disco
-	dirname:=CreateMountDir(diskUuid)     //Crea una carpeta en donde se va a montar...
+	dirname:=CreateMountDir()     //Crea una carpeta en donde se va a montar...
 	by,_:=ioutil.ReadFile("./disks")  //...esta carpeta es unica a la uuid del disco
 	file:=string(by)            
 	fmt.Println(string(by))
-	if strings.Contains(file, dirname){
+	if strings.Contains(file, diskUuid){
 		//si el directorio ya existe y el disco ya esta en el archivo de configuracion entonces solo montar
-		MountByUUID(diskUuid,dirname)
+		MountByFile()
 	}else{
 		//si no agregar a la configuracion y montar
 		AddDiskToConfig(diskUuid,dirname)
@@ -178,5 +187,4 @@ func VerifyDisk(diskUuid string)  { //Recibe UUID del disco
 }
 
 //func main(){
-//	VerifyDisk("hola")
 //}
