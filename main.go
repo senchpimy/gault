@@ -82,7 +82,7 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 
 func INIT()  {
 	CreateParentDir()
-	MountByUUID()
+	MountByFile()
 }
 
 func main() {

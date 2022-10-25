@@ -161,17 +161,22 @@ func AddDiskToConfig(disk string, MountPoint string){
 
 }
 
-func VerifyDisk(disk string)  { //Recibe UUID del disco
-	dirname:=CreateMountDir(disk)     //Crea una carpeta en donde se va a montar...
-	if dirname in archivo{            //...esta carpeta es unica a la uuid del disco
-	//si el directorio ya existe y el disco ya esta en el archivo de configuracion entonces solo montar	
+func VerifyDisk(diskUuid string)  { //Recibe UUID del disco
+	dirname:=CreateMountDir(diskUuid)     //Crea una carpeta en donde se va a montar...
+	by,_:=ioutil.ReadFile("./disks")  //...esta carpeta es unica a la uuid del disco
+	file:=string(by)            
+	fmt.Println(string(by))
+	if strings.Contains(file, dirname){
+		//si el directorio ya existe y el disco ya esta en el archivo de configuracion entonces solo montar
+		MountByUUID(diskUuid,dirname)
 	}else{
 		//si no agregar a la configuracion y montar
-		AddDiskToConfig(disk,dirname)
-		Mount()
+		AddDiskToConfig(diskUuid,dirname)
+		MountByUUID(diskUuid,dirname)
 	}
 	
 }
 
 //func main(){
+//	VerifyDisk("hola")
 //}

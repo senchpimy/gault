@@ -65,13 +65,6 @@ func WriteToFile(Texto string, File string, location int) {
 	}
 }
 
-//func ReadFile(file string) {
-//	data, err := ioutil.ReadFile(file)
-//	if err != nil {
-//		log.Panicf("failed reading data from file: %s", err)
-//	}
-//}
-
 func ExistSambaConf()  { //completado
 	if _, err := os.Stat("/etc/samba/smb.conf"); errors.Is(err, os.ErrNotExist) {
 		log.Fatal("Samba Config File 'smb.conf' does not exist")
@@ -92,20 +85,19 @@ func CreateConfiguration(Configuration SectionDefinition)(foo []string){ //Compl
 }
 
 func WriteShareConf(bar []string){ //Completado
-	 f, err := os.OpenFile("/etc/samba/smb.conf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer f.Close()
-	for i:=0;i<len(bar);i++{
-    if _, err := f.Write([]byte(bar[i])); err != nil {
-        log.Fatal(err)
+	f, err := os.OpenFile("/etc/samba/smb.conf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+	    log.Fatal(err)
 	}
-    }
-    if err := f.Close(); err != nil {
-        log.Fatal(err)
-    }
-
+	defer f.Close()
+	    for i:=0;i<len(bar);i++{
+	if _, err := f.Write([]byte(bar[i])); err != nil {
+	    log.Fatal(err)
+	    }
+	}
+	if err := f.Close(); err != nil {
+	    log.Fatal(err)
+	}
 }
 
 func DeleteShare(share string)(error error){
