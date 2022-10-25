@@ -11,7 +11,7 @@ var mainpage = "/"
 var discospage = "/discosDisponibles"
 var discosmontadospage = "/discos"
 var sambapage = "/SambaConfi"
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
 func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
 	w.WriteHeader(status)
 	if status == http.StatusNotFound {
@@ -26,7 +26,11 @@ func readHtmlFromFile(fileName string) ([]byte) {
     return bs
 }
 
-
+func INIT()  {
+	CreateParentDir()
+	MountByFile()
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	    if r.URL.Path != mainpage {
         errorHandler(w, r, http.StatusNotFound)
@@ -34,17 +38,31 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
     }
 	w.Write(readHtmlFromFile("./index.html"))
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
 func DiscosMontados(w http.ResponseWriter ,r *http.Request)  {
 	if r.URL.Path != discosmontadospage {
         	errorHandler(w, r, http.StatusNotFound)
         	return
 	}
-	Data:=FormaterDiskInfo(GetInfoSystem())
-	t:=template.Must(template.ParseFiles("./discos.html"))
-	t.Execute(w,Data)
-}
+	switch r.Method {
+	case "GET":
+		Data:=FormaterDiskInfo(GetInfoSystem())
+		t:=template.Must(template.ParseFiles("./discos.html"))
+		t.Execute(w,Data)
+	case "POST":
+		fmt.Println("POST")
+		if err := r.ParseForm(); err !=nil{
+			fmt.Fprintf(w,"ParseForm() err: v%",err)
+			return
+		}
 
+		//diskUuid:=r.FormValue("diskselected")
+		//VerifyDisk(diskUuid)
+
+	default: fmt.Fprintf(w,"Error")
+	}
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {
 	if r.URL.Path != discospage {
         errorHandler(w, r, http.StatusNotFound)
@@ -68,7 +86,7 @@ func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {
 	default: fmt.Fprintf(w,"Error")
 	}
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
 func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 	    if r.URL.Path != sambapage {
         errorHandler(w, r, http.StatusNotFound)
@@ -79,10 +97,9 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 	t.Execute(w,Configuration)
 }
 
-func INIT()  {
-	CreateParentDir()
-	MountByFile()
-}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 func main() {
 //         cmd := exec.Command("id", "-u")

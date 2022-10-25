@@ -74,12 +74,16 @@ func randSeq(n int) string {
 func FormaterDiskInfo(foo [][]string)(bar Format_DF){
 	listu:=make([]Disk_DF,len(foo))
 	for i:=0;i<len(foo);i++{
+		if foo[i][0]=="tmpfs" || foo[i][0]=="dev" || foo[i][0]=="run" || foo[i][5]=="/"{
+			continue
+		}else{
 		listu[i].Filesystem=foo[i][0]
 		listu[i].Mem,_=strconv.Atoi(foo[i][1])
 		listu[i].Used,_=strconv.Atoi(foo[i][2])
 		listu[i].Avaible,_=strconv.Atoi(foo[i][3])
 		listu[i].UsePercent=foo[i][4]
 		listu[i].Mount=foo[i][5]
+		}
 	}
 	ret:=Format_DF{Title:"Discos",Todos:listu}
 	return ret
@@ -142,7 +146,6 @@ func MountByFile(){
 			}
 		}
 	}
-
 }
 
 func MountByUUID(uuid string, dir string){
