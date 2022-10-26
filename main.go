@@ -106,11 +106,12 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 		}
 
 		var NewShare Share
-		ConfigurationsReceived:=make([]Configuration,9)
+		ConfigurationsReceived:=make([]Configuration,12)
 		i:=0
 		for key, element:= range r.Form{
 			if key=="Titulo"{
 				NewShare.Title=r.FormValue("Titulo")
+				continue
 			}
 			ConfigurationsReceived[i].Variable=key
 			ConfigurationsReceived[i].Value=strings.Join(element," ")

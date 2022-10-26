@@ -27,15 +27,6 @@ import (
 //hosts allow = 192.168.0.0/16
 //hosts deny= 0.0.0.0/0
 
-//	ADD USER
-// smbpasswd -axde USR PASSW
-
-//	Commands
-//sudo systemctl start smb
-//sudo systemctl enable smb
-//sudo systemctl start nmb
-//sudo systemctl enable nmb
-
 type Configuration struct{
 Variable string
 Value string
@@ -203,23 +194,39 @@ func GetAllConfigurations()(foo ConfigurationsStruct){
     if err2 != nil {log.Fatal(err2)}
  }
 
- func Verifyshare(ReceivedShare Share)  {
-	 NewContents:=ReceivedShare.Contents
- 	if ReceivedShare.Title==""{
-	}else{
+ func VerifyShare(ReceivedShare Share)  {
+	NewContents:=ReceivedShare.Contents
+	//NewContents2:=NewContents
+	elementes:=[]string{"comment", "guest only", "writable", "valid users", "guest ok", "browseable", "hosts deny", "read only", "wins support", "hosts allow", "LocalsOnly","public"}
+	elementes1:=make([]string,len(elementes))
 		for index,item:= range ReceivedShare.Contents{
-			if item.Value==""{remove(NewContents,index);continue}
+			if item.Variable==""{continue}
 			if item.Value=="on"{NewContents[index].Value="yes"}
+			elementes1[index]=item.Variable
 		}
-	}
 	ReceivedShare.Contents=NewContents
+	noselected:=difference(elementes,elementes1)
+	for index,item:=range noselected{
+		ReceivedShare.Contents[len(ReceivedShare.Contents)-index-1].Variable=item
+		ReceivedShare.Contents[len(ReceivedShare.Contents)-index-1].Value="no"
+	}
  }
-
-func remove(slice []Configuration, s int) []Configuration {
-    return append(slice[:s], slice[s+1:]...)
-}
 
 func AddSambaUser(user string, password string)  {
 	err:=exec.Command("sh","./CreateUser.sh",user, password).Run()
     	if err != nil {CreateError(err.Error())}
+}
+
+func difference(a, b []string) []string {
+    mb := make(map[string]struct{}, len(b))
+    for _, x := range b {
+        mb[x] = struct{}{}
+    }
+    var diff []string
+    for _, x := range a {
+        if _, found := mb[x]; !found {
+            diff = append(diff, x)
+        }
+    }
+    return diff
 }
