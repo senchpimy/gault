@@ -99,26 +99,32 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 		t:=template.Must(template.ParseFiles("./samba.html"))
 		t.Execute(w,Configuration)
 	case "POST":
-		fmt.Println("POST")
 		if err := r.ParseForm(); err !=nil{
 			fmt.Fprintf(w,"ParseForm() err: v%",err)
 			return
 		}
 
-		var NewShare Share
-		ConfigurationsReceived:=make([]Configuration,12)
-		i:=0
-		for key, element:= range r.Form{
-			if key=="Titulo"{
-				NewShare.Title=r.FormValue("Titulo")
-				continue
+		//Title:=r.FormValue("Delete")
+		if len(r.Form)!=1{
+			var NewShare Share
+			ConfigurationsReceived:=make([]Configuration,12)
+			i:=0
+			for key, element:= range r.Form{
+				if key=="Titulo"{
+					NewShare.Title=r.FormValue("Titulo")
+					continue
+				}
+				if key=="Delete"{continue}
+				ConfigurationsReceived[i].Variable=key
+				ConfigurationsReceived[i].Value=strings.Join(element," ")
+				i++
 			}
-			ConfigurationsReceived[i].Variable=key
-			ConfigurationsReceived[i].Value=strings.Join(element," ")
-			i++
+			NewShare.Contents=ConfigurationsReceived
+			VerifyShare(NewShare)
+		}else{
+		Share:=r.FormValue("Delete")
+		DeleteShare(Share)
 		}
-		NewShare.Contents=ConfigurationsReceived
-		VerifyShare(NewShare)
 
 	default: fmt.Fprintf(w,"Error")
 	}

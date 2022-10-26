@@ -6,20 +6,22 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
-		<div>
+		<form method="POST">
+		<div> Delete a share:
+
+			<select name="Delete">
 			{{range .Sections}}
-			<div>
-				{{.Title}}
-			</div>
-			<ul>
-				
-				{{range .Contents}}
-				<li><b>{{.Variable}}</b> = {{.Value}}</li>
-				{{end}}
-			</ul>
+			{{if ne .Title "DEFAULT"}}
+			{{if ne .Title "global"}}
+			<option value="{{.Title}}">{{.Title}}</option>
 			{{end}}
+			{{end}}
+			{{end}}
+			</select>
 		</div>
-	</body>
+			<input type="submit" value="submit">
+		</form>
+		<pre></pre>
 	<b>Create a Share</b>
 	<form method="POST">
 		<div>Titulo:<input type="text" name="Titulo" value=""></div>
@@ -32,6 +34,16 @@
 		<div><input type="checkbox" name="read only" /> Read Only</div>
 		<div><input type="checkbox" name="wins support" /> Windows Support</div>
 		<div>Valid Users (separated by ","):<input type="text" name="valid users" /></div>
+		<div>
+			Path:
+			<select name="path">
+			{{range .Mounted}}
+			{{if ne .Mem 0 }}
+			<option value="{{.Mount}}">{{.Filesystem}}</option>
+			{{end}}
+			{{end}}
+			</select>
+		</div>
 		<section>
 			Hosts to allow:<input type="text" name="hosts allow" />
 			Hosts to deny:<input type="text" name="hosts deny" />
@@ -39,4 +51,5 @@
 		</section>
 			<input type="submit" value="submit">
 	</form>
+	</body>
 </html>

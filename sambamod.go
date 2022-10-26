@@ -39,6 +39,7 @@ Contents []Configuration
 
 type ConfigurationsStruct struct{
 Sections []Share
+Mounted []Disk_DF
 }
 
 func WriteToFile(Texto string, File string, location int) {
@@ -165,12 +166,13 @@ func GetAllConfigurations()(foo ConfigurationsStruct){
 	for j,key:=range file.Section(section).KeyStrings(){
 		Variables[j].Variable=key
 		Variables[j].Value=file.Section(section).Key(key).String()
-		
-	}
-		Configurations[i].Contents=Variables
-    }
-    var Configs ConfigurationsStruct
-    Configs.Sections=Configurations
+}
+	Configurations[i].Contents=Variables
+}
+var Configs ConfigurationsStruct
+Configs.Sections=Configurations
+Data:=FormaterDiskInfo(GetInfoSystem())
+Configs.Mounted=Data.Todos
     return Configs
 }
 
@@ -210,6 +212,8 @@ func GetAllConfigurations()(foo ConfigurationsStruct){
 		ReceivedShare.Contents[len(ReceivedShare.Contents)-index-1].Variable=item
 		ReceivedShare.Contents[len(ReceivedShare.Contents)-index-1].Value="no"
 	}
+
+	WriteShareConf(CreateConfiguration(ReceivedShare))
  }
 
 func AddSambaUser(user string, password string)  {
