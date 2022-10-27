@@ -12,6 +12,7 @@ var mainpage = "/"
 var discospage = "/discosDisponibles"
 var discosmontadospage = "/discos"
 var sambapage = "/SambaConfi"
+var UserConfig = "/UserConfig"
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
 	w.WriteHeader(status)
@@ -129,7 +130,28 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 	default: fmt.Fprintf(w,"Error")
 	}
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////
+func Users(w http.ResponseWriter, r *http.Request)  {
+	if r.URL.Path != discospage {
+        errorHandler(w, r, http.StatusNotFound)
+        return
+    }
+	switch r.Method {
+	case "GET":
+	w.Write(readHtmlFromFile("./index.html"))
+	case "POST":
+		fmt.Println("POST")
+		if err := r.ParseForm(); err !=nil{
+			fmt.Fprintf(w,"ParseForm() err: v%",err)
+			return
+		}
 
+		diskUuid:=r.FormValue("diskselected")
+		VerifyDisk(diskUuid)
+
+	default: fmt.Fprintf(w,"Error")
+	}
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,6 +184,7 @@ func main() {
 	mux.HandleFunc(discosmontadospage, DiscosMontados)
 	mux.HandleFunc(discospage, DiscosDisponibles)
 	mux.HandleFunc(sambapage, SambaConfiguration)
+	mux.HandleFunc(UserConfig, Users)
 	//mux.HandleFunc("/login", login)
 	http.ListenAndServe(port, mux)
 

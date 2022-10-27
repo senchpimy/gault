@@ -13,8 +13,6 @@ import (
 	"time"
 )
 
-//sudo fdisk -l: mucha info
-
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 type Disk_DF struct{
@@ -189,5 +187,3 @@ func VerifyDisk(diskUuid string)  { //Recibe UUID del disco
 		}
 	}
 }
-//func main(){
-//}
