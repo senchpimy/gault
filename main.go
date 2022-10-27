@@ -105,8 +105,8 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 			return
 		}
 
-		//Title:=r.FormValue("Delete")
 		if len(r.Form)!=1{
+			Correct:=true
 			var NewShare Share
 			ConfigurationsReceived:=make([]Configuration,12)
 			i:=0
@@ -116,12 +116,32 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 					continue
 				}
 				if key=="Delete"{continue}
+				if key=="valid users"{
+					userslist, valid:=UsersExist(strings.Join(element," "))
+					fmt.Println(valid)
+					if valid==true{
+						ConfigurationsReceived[i].Variable=key
+						UsersFormated:=strings.Join(element," ")
+						ConfigurationsReceived[i].Value=strings.Replace(UsersFormated,","," ",-1)
+						i++
+						continue
+					}else{
+						CreateError("The following users don exist:")
+						for _, item := range userslist{
+							CreateError(item)
+
+						}
+						CreateError("Imposible de Crear El Share")
+						break
+						Correct=false
+					}
+				}
 				ConfigurationsReceived[i].Variable=key
 				ConfigurationsReceived[i].Value=strings.Join(element," ")
 				i++
 			}
 			NewShare.Contents=ConfigurationsReceived
-			VerifyShare(NewShare)
+			if Correct==true{VerifyShare(NewShare)}else{CreateError("Un Error Sucedio Imposible de Crear Share")}
 		}else{
 		Share:=r.FormValue("Delete")
 		DeleteShare(Share)
@@ -132,13 +152,15 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 func Users(w http.ResponseWriter, r *http.Request)  {
-	if r.URL.Path != discospage {
+	if r.URL.Path != UserConfig {
         errorHandler(w, r, http.StatusNotFound)
         return
     }
 	switch r.Method {
 	case "GET":
-	w.Write(readHtmlFromFile("./index.html"))
+		Configuration:=GetUsers()
+		t:=template.Must(template.ParseFiles("./users.html"))
+		t.Execute(w,Configuration)
 	case "POST":
 		fmt.Println("POST")
 		if err := r.ParseForm(); err !=nil{
@@ -146,8 +168,10 @@ func Users(w http.ResponseWriter, r *http.Request)  {
 			return
 		}
 
-		diskUuid:=r.FormValue("diskselected")
-		VerifyDisk(diskUuid)
+		User:=r.FormValue("User")
+		Passw1:=r.FormValue("Passw1")
+		Passw2:=r.FormValue("Passw2")
+		AddUser(User,Passw1,Passw2)
 
 	default: fmt.Fprintf(w,"Error")
 	}

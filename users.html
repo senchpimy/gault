@@ -6,12 +6,20 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
-		Hola
+		Create A New User
 		<form method="POST">
-			<input type="text" name="User" value="">
-			<input type="text" name="Passw1" value="">
-			<input type="text" name="Passw2" value="">
+			<div>Enter Username:<input type="text" name="User" value=""></div>
+			<div>Enter Password:<input type="text" name="Passw1" value=""></div>
+			<div>Retype Password:<input type="text" name="Passw2" value=""></div>
 		  	<input type="submit" value="Submit">
 		</form>
+		<div>
+			Current Users:
+			<ul>
+			{{range .Users}}
+				<li>{{.}}</li>
+			{{end}}
+			</ul>
+		</div>
 	</body>
 </html>

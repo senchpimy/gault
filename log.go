@@ -14,7 +14,7 @@ func CreateError(foo string){
         log.Fatal(err)
     }
     defer f.Close()
-    if _, err := f.Write([]byte(date+": "+foo)); err != nil {
+    if _, err := f.Write([]byte(date+": "+foo+"\n")); err != nil {
         log.Fatal(err)
 	}
 	
