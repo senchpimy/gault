@@ -1,4 +1,4 @@
-#GAULT
+# GAULT
 
 Gault is a OpenMediaVault alternative written in go
 
@@ -14,3 +14,5 @@ samba
 
 smbclient
 
+
+### Currently Working in a login page and support for nfs and ftp

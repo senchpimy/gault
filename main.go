@@ -60,6 +60,9 @@ func DiscosMontados(w http.ResponseWriter ,r *http.Request)  {
 
 		diskUuid:=r.FormValue("diskselected")
 		Umount(diskUuid)
+		Data:=FormaterDiskInfo(GetInfoSystem())
+		t:=template.Must(template.ParseFiles("./discos.html"))
+		t.Execute(w,Data)
 
 	default: fmt.Fprintf(w,"Error")
 	}
@@ -84,6 +87,9 @@ func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {
 
 		diskUuid:=r.FormValue("diskselected")
 		VerifyDisk(diskUuid)
+		Data:=GetDisks()
+		t:=template.Must(template.ParseFiles("./discosDisponibles.html"))
+		t.Execute(w,Data)
 
 	default: fmt.Fprintf(w,"Error")
 	}
@@ -146,6 +152,9 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 		Share:=r.FormValue("Delete")
 		DeleteShare(Share)
 		}
+		Configuration:=GetAllConfigurations()
+		t:=template.Must(template.ParseFiles("./samba.html"))
+		t.Execute(w,Configuration)
 
 	default: fmt.Fprintf(w,"Error")
 	}
@@ -172,6 +181,9 @@ func Users(w http.ResponseWriter, r *http.Request)  {
 		Passw1:=r.FormValue("Passw1")
 		Passw2:=r.FormValue("Passw2")
 		AddUser(User,Passw1,Passw2)
+		Configuration:=GetUsers()
+		t:=template.Must(template.ParseFiles("./users.html"))
+		t.Execute(w,Configuration)
 
 	default: fmt.Fprintf(w,"Error")
 	}
@@ -202,6 +214,7 @@ func main() {
 //                 log.Fatal("Not root")
 //         }
 //
+	INIT()
 	port := ":3000"
 	mux := http.NewServeMux()
 	mux.HandleFunc(mainpage, indexHandler)
