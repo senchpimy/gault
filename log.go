@@ -1,9 +1,10 @@
 package main
 
-import(
- "time"
- "os"
- "log"
+import (
+	"fmt"
+	"log"
+	"os"
+	"time"
 )
 
 func CreateError(foo string){
@@ -17,5 +18,5 @@ func CreateError(foo string){
     if _, err := f.Write([]byte(date+": "+foo+"\n")); err != nil {
         log.Fatal(err)
 	}
-	
+	fmt.Println(date+": "+foo)
 }

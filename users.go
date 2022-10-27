@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os/exec"
 	"strings"
@@ -12,7 +13,7 @@ Users []string
 
 func GetUsers()(foo UsersInSystem){
 	out,err:=exec.Command("ls","/home").Output()
-	if err != nil{CreateError(err.Error())}
+	if err != nil{CreateError(err.Error());log.Fatal(err)}
 	NumeOfUsers:=strings.Split(string(out),"\n")
 	list:=make([]string,len(NumeOfUsers)-1)
 	for index,item:= range NumeOfUsers[:len(NumeOfUsers)-1]{
@@ -24,10 +25,12 @@ func GetUsers()(foo UsersInSystem){
 }
 
 func AddUser(user string,password1 string, password2 string)  {
+	fmt.Println("Creando Usuario")
 	if password1==password2{
 		password:=password1
-		err:=exec.Command("sh","./CreateUser.sh",user,password)
+		err:=exec.Command("sh","CreateUser.sh",user,password).Run()
 		if err != nil{log.Fatal(err)}
+		fmt.Println("Usuario Creado")
 	}else{
 		CreateError("Las Contraseñas no son Iguales")
 	}
