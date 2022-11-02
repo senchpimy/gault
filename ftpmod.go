@@ -4,16 +4,11 @@ import (
 	"errors"
 	"log"
 	"os"
+	"os/exec"
 )
 
 //	GLOBAL
 //Puertos 20 , 21
-//systemctl enable vsftpd.service
-//systemctl start vsftpd
-//systemctl restart vsftpd
-//systemctl reload vsftpd
-//systemctl status vsftpd
-//systemctl enable vsftpd
 //
 // Crear un usuario y asignarlo a una carpeta 
 // useradd -g ftp -d /var/www/html/carpetaFTP usuarioftp
@@ -35,4 +30,39 @@ func ExistFTPConf()  { //completado
 		log.Fatal("Samba Config File 'vsftpd.conf' does not exist")
 		}
 }
+
+ func StartFtp(){
+	
+    cmd := exec.Command("systemctl", "start", "vsftpd")
+    err := cmd.Run()
+    if err != nil {log.Fatal(err)}
+ }
+
+ func EnableFtp(){
+	
+    cmd2 := exec.Command("systemctl", "enable", "vsftpd")
+    err2 := cmd2.Run()
+    if err2 != nil {log.Fatal(err2)}
+ }
+
+ func RestartFtp(){
+	
+    cmd2 := exec.Command("systemctl", "restart", "vsftpd")
+    err2 := cmd2.Run()
+    if err2 != nil {log.Fatal(err2)}
+ }
+
+ func ReloadFtp(){
+	
+    cmd2 := exec.Command("systemctl", "reload", "vsftpd")
+    err2 := cmd2.Run()
+    if err2 != nil {log.Fatal(err2)}
+ }
+
+// func StatuFtp(){
+//	
+//    cmd2 := exec.Command("systemctl", "status", "vsftpd")
+//    err2 := cmd2.Run()
+//    if err2 != nil {log.Fatal(err2)}
+// }
 

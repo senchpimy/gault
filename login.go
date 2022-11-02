@@ -1,4 +1,6 @@
-  package main
+package main
+
+
 //
 //import (
 //	"crypto/sha512"
@@ -9,10 +11,13 @@
 //	"net/http"
 //	"os"
 //	"strings"
+//	//"github.com/gorilla/sessions"
+//	//"models"
 //)
 //
-  var Logged bool=false
+////var store= sessions.NewCookieStore([]byte("mysession"))
 //
+var loginnotworking bool= true
 //type User struct{
 //User_name string
 //Password string
@@ -35,36 +40,36 @@
 //		fmt.Fprintf(w,"value = %s\n",name)
 //		fmt.Fprintf(w,"value in sha_512 = \t%s",base64.StdEncoding.EncodeToString(sha_512.Sum(nil)))
 //		GetPasswordConfirmation("test",name)
-//		fmt.Fprintf(w,"value = %b\n",Logged)
 //
 //
 //	default: fmt.Fprintf(w,"Error")
 //	}
 //}
-//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////					Recibe un usuario y una contraseña, Lee la base de Usuarios y hace algo cuando la contraseña es correcta o incorrecta
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //func GetPasswordConfirmation(User string,Password string){
-//	Users:= GetUsers()
+//	UsersInGault:= GetGaultUsers()
 //	exist_user:=false
-//	 for _,item:= range Users{
+//	 for _,item:= range UsersInGault{
 //		if item.User_name==User{
 //			exist_user=true
-//			password:=sha512.New()
-//			password.Write([]byte(Password))
-//			if item.Password==base64.StdEncoding.EncodeToString(password.Sum(nil)){
-//			//if item.Password==Password{
-//				Logged=true
+//			//password:=sha512.New()
+//			//password.Write([]byte(Password))
+//			//if item.Password==base64.StdEncoding.EncodeToString(password.Sum(nil)){
+//			if item.Password==Password{
 //				fmt.Println("LoggedSuccedful")
 //				fmt.Println(Password)
 //				fmt.Println(item.Password)
 //				fmt.Println(item.User_name)
-//				fmt.Println(base64.StdEncoding.EncodeToString(password.Sum(nil)))
+//				//fmt.Println(base64.StdEncoding.EncodeToString(password.Sum(nil)))
 //				break
 //			}else{
 //				fmt.Println("Passwords Don match");
 //				fmt.Println(Password)
 //				fmt.Println(item.Password)
 //				fmt.Println(item.User_name)
-//				fmt.Println(base64.StdEncoding.EncodeToString(password.Sum(nil)))
+//				//fmt.Println(base64.StdEncoding.EncodeToString(password.Sum(nil)))
 //				break
 //			}
 //		}
@@ -72,8 +77,7 @@
 //	 if exist_user==false{fmt.Println("User dont found")}
 //}
 //
-//
-//func GetUsers()(foo []User){
+//func GetGaultUsers()(foo []User){  //completo
 //    file, err := os.Open("./passwords")
 //    if err != nil {
 //        log.Fatal(err)
@@ -94,11 +98,14 @@
 //    }
 //    return Users
 //}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //func main(){
-//	port := ":3000"
-//	mux := http.NewServeMux()
-//	mux.HandleFunc("/", login)
-//	http.ListenAndServe(port, mux)
-//	//GetPasswordConfirmation("test","cjeslapolla")
+////	port := ":3000"
+////	mux := http.NewServeMux()
+////	mux.HandleFunc("/", login)
+////	mux.HandleFunc("/login", login)
+////	http.ListenAndServe(port, mux)
+//	GetPasswordConfirmation("test","cjeslapolla")
 //}

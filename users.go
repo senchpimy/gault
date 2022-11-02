@@ -24,13 +24,20 @@ func GetUsers()(foo UsersInSystem){
 	return Test
 }
 
-func AddUser(user string,password1 string, password2 string)  {
+func AddUser(user string,password1 string, password2 string, typeOfUser string)  {
 	fmt.Println("Creando Usuario")
 	if password1==password2{
 		password:=password1
-		err:=exec.Command("sh","CreateUser.sh",user,password).Run()
-		if err != nil{log.Fatal(err)}
-		fmt.Println("Usuario Creado")
+		switch typeOfUser {
+		case "Samba":
+			err:=exec.Command("sh","CreateSambaUser.sh",user,password).Run()
+			if err != nil{log.Fatal(err)}
+			fmt.Println("Usuario Samba Creado")
+		case "Ftp":
+			err:=exec.Command("sh","CreateFtpUser.sh",user,password).Run()
+			if err != nil{log.Fatal(err)}
+			fmt.Println("Usuario Ftp Creado")
+		}
 	}else{
 		CreateError("Las Contraseñas no son Iguales")
 	}
