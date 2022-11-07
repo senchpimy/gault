@@ -11,34 +11,43 @@ import (
 	"os"
 	"strings"
 	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 )
 
-var store = sessions.NewCookieStore([]byte("mysession"))
+var storeOfsessions = sessions.NewCookieStore([]byte("mysession"))
 type User struct{
 User_name string
 Password string
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
+	status:=http.StatusNotFound
+	if r.URL.Path != Login{
+		w.WriteHeader(status)
+		if status == http.StatusNotFound {
+			w.Write(readHtmlFromFile("./404.html"))
+	        return 
+		}
+	}
 	switch r.Method {
 	case "GET":
-		http.ServeFile(w,r,"./login.html")
+		tpl.ExecuteTemplate(w, "login.html", nil)
 	case "POST":
 		if err := r.ParseForm(); err !=nil{
 			fmt.Fprintf(w,"ParseForm() err: v%",err)
 			return
 		}
 
-		fmt.Fprintf(w,"Post form website r.postfrom =%v \n",r.PostForm)
+		//fmt.Fprintf(w,"Post form website r.postfrom =%v \n",r.PostForm)
 		name:=r.FormValue("name")
-		//pass:=r.FormValue("pass")
-		if name=="hola"{
-			session, _ := store.Get(r, "session")
+		pass:=r.FormValue("pass")
+		if GetPasswordConfirmation(name,pass){
+			session, _ := storeOfsessions.Get(r, "session")
 			session.Values["userID"] = name
 			session.Save(r, w)
 			fmt.Println("correct")
 			//http.Redirect(w, r, "/", http.StatusFound)
-			tpl.ExecuteTemplate(w, "index.html", "Logged In")
+			tpl.ExecuteTemplate(w, "index.html", nil)
 		}else{
 			fmt.Println("No correct")
 		}
@@ -70,7 +79,8 @@ func GetPasswordConfirmation(User string,Password string)(foo bool){
 			//password:=sha512.New()
 			//password.Write([]byte(Password))
 			//if item.Password==base64.StdEncoding.EncodeToString(password.Sum(nil)){
-			if item.Password==Password{
+			err := bcrypt.CompareHashAndPassword([]byte(item.Password), []byte(Password))
+			if err==nil{
 				fmt.Println("LoggedSuccedful")
 				return true
 			}else{
@@ -79,9 +89,13 @@ func GetPasswordConfirmation(User string,Password string)(foo bool){
 	 			return false
 			}
 		}
-	 }
-	 if exist_user==false{fmt.Println("User dont found")}
+	}
+	if exist_user==false{
+	 fmt.Println("User dont found")
+	 CreateError("User dont found")
 	 return false
+ 	}
+	return
 }
 
 func GetGaultUsers()(foo []User){  //completo
@@ -106,3 +120,12 @@ func GetGaultUsers()(foo []User){  //completo
     return Users
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("*****logoutHandler running*****")
+	session, _ := storeOfsessions.Get(r, "session")
+	// The delete built-in function deletes the element with the specified key (m[key]) from the map.
+	// If m is nil or there is no such element, delete is a no-op.
+	delete(session.Values, "userID")
+	session.Save(r, w)
+	tpl.ExecuteTemplate(w, "login.html", "Logged Out")
+}

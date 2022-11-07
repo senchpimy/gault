@@ -16,31 +16,26 @@ var discospage = "/discosDisponibles"
 var discosmontadospage = "/discos"
 var sambapage = "/SambaConfi"
 var UserConfig = "/UserConfig"
+var Login = "/login"
 
 var tpl *template.Template
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 func errorHandler(w http.ResponseWriter, r *http.Request, PageName string) (foo bool){
-	foo=false
 	status:=http.StatusNotFound
 	if r.URL.Path != PageName {
 		w.WriteHeader(status)
 		if status == http.StatusNotFound {
 			w.Write(readHtmlFromFile("./404.html"))
-		foo=true
-	        return foo
+	        return true
 		}
 	}
 
-	session, _ := store.Get(r, "session")
-	_, test := session.Values["userID"]
-	fmt.Println(test)
-	fmt.Println(session.Values)
-//	if !ok {
-//		http.Redirect(w, r, "/login", http.StatusFound) // http.StatusFound is 302
-//	        return foo
-//	}
-//	foo=true
-	return foo
+	session, _ := storeOfsessions.Get(r, "session")
+	_, ok := session.Values["userID"]
+	if !ok {
+ 		http.Redirect(w, r, Login, http.StatusFound) // http.StatusFound is 302
+        	return true
+	}else{return false}
 }
 
 func readHtmlFromFile(fileName string) ([]byte) {
@@ -115,7 +110,7 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
     }
 	switch r.Method {
 	case "GET":
-		tpl.ExecuteTemplate(w, "discos.html", GetAllConfigurations)
+		tpl.ExecuteTemplate(w, "samba.html", GetAllConfigurations())
 	case "POST":
 		if err := r.ParseForm(); err !=nil{
 			fmt.Fprintf(w,"ParseForm() err: v%",err)
@@ -149,8 +144,8 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 
 						}
 						CreateError("Imposible de Crear El Share")
-						break
 						Correct=false
+						break
 					}
 				}
 				ConfigurationsReceived[i].Variable=key
@@ -163,9 +158,7 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 		Share:=r.FormValue("Delete")
 		DeleteShare(Share)
 		}
-		Configuration:=GetAllConfigurations()
-		t:=template.Must(template.ParseFiles("./samba.html"))
-		t.Execute(w,Configuration)
+		tpl.ExecuteTemplate(w, "samba.html", GetAllConfigurations())
 
 	default: fmt.Fprintf(w,"Error")
 	}
@@ -177,7 +170,7 @@ func Users(w http.ResponseWriter, r *http.Request)  {
     }
 	switch r.Method {
 	case "GET":
-		tpl.ExecuteTemplate(w, "discos.html", GetUsers())
+		tpl.ExecuteTemplate(w, "users.html", GetUsers())
 	case "POST":
 		fmt.Println("POST")
 		if err := r.ParseForm(); err !=nil{
@@ -190,15 +183,11 @@ func Users(w http.ResponseWriter, r *http.Request)  {
 		Passw2:=r.FormValue("Passw2")
 		TypeOfUser:=r.FormValue("Type")
 		AddUser(User,Passw1,Passw2,TypeOfUser)
-		Configuration:=GetUsers()
-		t:=template.Must(template.ParseFiles("./users.html"))
-		t.Execute(w,Configuration)
+		tpl.ExecuteTemplate(w, "users.html", GetUsers())
 
 	default: fmt.Fprintf(w,"Error")
 	}
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 func main() {
@@ -221,7 +210,7 @@ func main() {
 	http.HandleFunc(sambapage, SambaConfiguration)
 	//http.HandleFunc(ftpPage, FTPConfiguration)
 	http.HandleFunc(UserConfig, Users)
-	http.HandleFunc("/log", login)
+	http.HandleFunc(Login, login)
 	http.ListenAndServe(port, context.ClearHandler(http.DefaultServeMux))
 
 }
