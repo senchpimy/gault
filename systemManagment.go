@@ -187,3 +187,24 @@ func VerifyDisk(diskUuid string)  { //Recibe UUID del disco
 		}
 	}
 }
+
+func IsRoot(){
+	cmd := exec.Command("id", "-u")
+	output, err := cmd.Output()
+	
+	if err != nil {
+	        log.Fatal(err)
+	}
+	
+	i, err := strconv.Atoi(string(output[:len(output)-1]))
+	
+	if err != nil {
+	        log.Fatal(err)
+	}
+	
+	if i == 0 {
+	        log.Println("root")
+	} else {
+	        log.Fatal("Not root")
+	}
+}
