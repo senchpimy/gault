@@ -31,38 +31,30 @@ func ExistFTPConf()  { //completado
 		}
 }
 
- func StartFtp(){
+func StartFtp(){
 	
     cmd := exec.Command("systemctl", "start", "vsftpd")
     err := cmd.Run()
     if err != nil {log.Fatal(err)}
  }
 
- func EnableFtp(){
+func EnableFtp(){
 	
     cmd2 := exec.Command("systemctl", "enable", "vsftpd")
     err2 := cmd2.Run()
     if err2 != nil {log.Fatal(err2)}
  }
 
- func RestartFtp(){
+func RestartFtp(){
 	
     cmd2 := exec.Command("systemctl", "restart", "vsftpd")
     err2 := cmd2.Run()
     if err2 != nil {log.Fatal(err2)}
  }
 
- func ReloadFtp(){
+func ReloadFtp(){
 	
     cmd2 := exec.Command("systemctl", "reload", "vsftpd")
     err2 := cmd2.Run()
     if err2 != nil {log.Fatal(err2)}
  }
-
-// func StatuFtp(){
-//	
-//    cmd2 := exec.Command("systemctl", "status", "vsftpd")
-//    err2 := cmd2.Run()
-//    if err2 != nil {log.Fatal(err2)}
-// }
-
