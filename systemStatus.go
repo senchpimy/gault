@@ -1,16 +1,8 @@
 package main
 
 import (
-//	"encoding/json"
-	"fmt"
-//	"io/ioutil"
-	// "log"
-//	"math/rand"
-//	"os"
 	"os/exec"
-//	"strconv"
 	"strings"
-//	"time"
 )
 
 type Status struct{
@@ -19,6 +11,10 @@ type Status struct{
 	Status string
 	Uptime string
 
+}
+
+type SystemStatusStruct struct{
+Services []Status
 }
 
 func StatusFtp()(foo []string){
@@ -31,6 +27,14 @@ func StatusFtp()(foo []string){
 
 func StatusNfs()(foo []string){
     cmd2 := exec.Command("systemctl", "status", "nfs-server")
+    out, _ := cmd2.CombinedOutput()
+    out2:=string(out)
+    // if err2 != nil {log.Fatal(err2)}
+    return strings.Split(out2,"\n")[0:3]
+ }
+
+func StatusSSH()(foo []string){
+    cmd2 := exec.Command("systemctl", "status", "sshd")
     out, _ := cmd2.CombinedOutput()
     out2:=string(out)
     // if err2 != nil {log.Fatal(err2)}
@@ -67,6 +71,13 @@ func StatusSmb()(foo []string){
 	return foo
 }
 
-func main()  {
-StatusFormater(StatusNfs())
+func SystemStatus()(foo SystemStatusStruct){
+	services:=make([]Status,3)
+	services[0]=StatusFormater(StatusNfs())
+	services[0]=StatusFormater(StatusSmb())
+	services[0]=StatusFormater(StatusFtp())
+	services[0]=StatusFormater(StatusSSH())
+	var bar SystemStatusStruct
+	bar.Services=services
+	return bar
 }

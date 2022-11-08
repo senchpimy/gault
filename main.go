@@ -18,6 +18,7 @@ var sambapage = "/SambaConfi"
 var UserConfig = "/UserConfig"
 var Login = "/login"
 var Logout = "/logout"
+var System = "/System"
 
 var tpl *template.Template
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,6 +166,13 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+func SystemOutput(w http.ResponseWriter, r *http.Request)  {
+    if errorHandler(w,r,UserConfig){
+	return
+    }
+		tpl.ExecuteTemplate(w, "status.html", SystemStatus())
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 func Users(w http.ResponseWriter, r *http.Request)  {
     if errorHandler(w,r,UserConfig){
 	return
@@ -195,20 +203,11 @@ func main() {
 	INIT()
 	port := ":3000"
 	tpl, _ = template.ParseGlob("templates/*.html")
-	//mux := http.NewServeMux()
-	//mux.HandleFunc(mainpage, indexHandler)
-	//mux.HandleFunc(discosmontadospage, DiscosMontados)
-	//mux.HandleFunc(discospage, DiscosDisponibles)
-	//mux.HandleFunc(sambapage, SambaConfiguration)
-	//mux.HandleFunc(ftpPage, FTPConfiguration)
-	//mux.HandleFunc(UserConfig, Users)
-	////mux.HandleFunc("/login", login)
-	//http.ListenAndServe(port, mux)
-
 	http.HandleFunc(mainpage, indexHandler)
 	http.HandleFunc(discosmontadospage, DiscosMontados)
 	http.HandleFunc(discospage, DiscosDisponibles)
 	http.HandleFunc(sambapage, SambaConfiguration)
+	http.HandleFunc(System, SystemOutput)
 	//http.HandleFunc(ftpPage, FTPConfiguration)
 	http.HandleFunc(UserConfig, Users)
 	http.HandleFunc(Login, login)
