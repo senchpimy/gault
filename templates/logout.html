@@ -1,0 +1,16 @@
+
+<!DOCTYPE html>
+<html>
+	<h1>Logout</h1>
+			 <button id="logout">Logout</button>
+	<script>
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "/logout", true);
+const button = document.getElementById('logout');
+button.addEventListener('click', function handleClick() {
+  console.log('element clicked');
+	xhr.send("aaaa");
+});
+
+	</script>
+</html>

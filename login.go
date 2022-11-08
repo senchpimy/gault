@@ -11,7 +11,7 @@ import (
 	"os"
 	"strings"
 	"github.com/gorilla/sessions"
-	"golang.org/x/crypto/bcrypt"
+	// "golang.org/x/crypto/bcrypt"
 )
 
 var storeOfsessions = sessions.NewCookieStore([]byte("mysession"))
@@ -22,7 +22,8 @@ Password string
 
 func login(w http.ResponseWriter, r *http.Request) {
 	status:=http.StatusNotFound
-	if r.URL.Path != Login{
+	if r.URL.Path != Login {
+	//if r.URL.Path != Login || r.URL.Path != Logout{
 		w.WriteHeader(status)
 		if status == http.StatusNotFound {
 			w.Write(readHtmlFromFile("./404.html"))
@@ -69,18 +70,19 @@ func login(w http.ResponseWriter, r *http.Request) {
 	default: fmt.Fprintf(w,"Error")
 	}
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 func GetPasswordConfirmation(User string,Password string)(foo bool){
 	UsersInGault:= GetGaultUsers()
 	exist_user:=false
 	 for _,item:= range UsersInGault{
-		if item.User_name==User{
+		 if item.User_name==User{
 			exist_user=true
 			//password:=sha512.New()
 			//password.Write([]byte(Password))
 			//if item.Password==base64.StdEncoding.EncodeToString(password.Sum(nil)){
-			err := bcrypt.CompareHashAndPassword([]byte(item.Password), []byte(Password))
-			if err==nil{
+			// err := bcrypt.CompareHashAndPassword([]byte(item.Password), []byte(Password))
+			// if err==nil{
+			if item.Password==Password{
 				fmt.Println("LoggedSuccedful")
 				return true
 			}else{
@@ -119,7 +121,7 @@ func GetGaultUsers()(foo []User){  //completo
     }
     return Users
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("*****logoutHandler running*****")
 	session, _ := storeOfsessions.Get(r, "session")
@@ -128,4 +130,21 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	delete(session.Values, "userID")
 	session.Save(r, w)
 	tpl.ExecuteTemplate(w, "login.html", "Logged Out")
+}
+
+func logout(w http.ResponseWriter, r *http.Request) {
+	errorHandler(w,r,Logout)
+	switch r.Method {
+	case "GET":
+		tpl.ExecuteTemplate(w, "logout.html", nil)
+	case "POST":
+		fmt.Println("*****logoutHandler running*****")
+		session, _ := storeOfsessions.Get(r, "session")
+		// The delete built-in function deletes the element with the specified key (m[key]) from the map.
+		// If m is nil or there is no such element, delete is a no-op.
+		delete(session.Values, "userID")
+		session.Save(r, w)
+		tpl.ExecuteTemplate(w, "login.html", nil)
+	default: fmt.Fprintf(w,"Error")
+	}
 }

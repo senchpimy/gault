@@ -17,6 +17,7 @@ var discosmontadospage = "/discos"
 var sambapage = "/SambaConfi"
 var UserConfig = "/UserConfig"
 var Login = "/login"
+var Logout = "/logout"
 
 var tpl *template.Template
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +212,7 @@ func main() {
 	//http.HandleFunc(ftpPage, FTPConfiguration)
 	http.HandleFunc(UserConfig, Users)
 	http.HandleFunc(Login, login)
+	http.HandleFunc(Logout, logout)
 	http.ListenAndServe(port, context.ClearHandler(http.DefaultServeMux))
 
 }

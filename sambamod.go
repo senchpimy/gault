@@ -26,6 +26,9 @@ import (
 // #######todo##########
 //hosts allow = 192.168.0.0/16
 //hosts deny= 0.0.0.0/0
+//	LocalsOnly
+//interfaces = 127.0.0.0/8 eth0
+//bind interfaces only = yes
 
 type Configuration struct{
 Variable string
