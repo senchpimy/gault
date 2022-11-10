@@ -125,8 +125,6 @@ func GetGaultUsers()(foo []User){  //completo
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("*****logoutHandler running*****")
 	session, _ := storeOfsessions.Get(r, "session")
-	// The delete built-in function deletes the element with the specified key (m[key]) from the map.
-	// If m is nil or there is no such element, delete is a no-op.
 	delete(session.Values, "userID")
 	session.Save(r, w)
 	tpl.ExecuteTemplate(w, "login.html", "Logged Out")
@@ -134,17 +132,5 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 func logout(w http.ResponseWriter, r *http.Request) {
 	errorHandler(w,r,Logout)
-	switch r.Method {
-	case "GET":
-		tpl.ExecuteTemplate(w, "logout.html", nil)
-	case "POST":
-		fmt.Println("*****logoutHandler running*****")
-		session, _ := storeOfsessions.Get(r, "session")
-		// The delete built-in function deletes the element with the specified key (m[key]) from the map.
-		// If m is nil or there is no such element, delete is a no-op.
-		delete(session.Values, "userID")
-		session.Save(r, w)
-		tpl.ExecuteTemplate(w, "login.html", nil)
-	default: fmt.Fprintf(w,"Error")
-	}
+	tpl.ExecuteTemplate(w, "logout.html", nil)
 }

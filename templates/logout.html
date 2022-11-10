@@ -2,15 +2,17 @@
 <!DOCTYPE html>
 <html>
 	<h1>Logout</h1>
-			 <button id="logout">Logout</button>
+			 <button id="logout" onclick="enviarpost('logout')" value="logout">Logout</button>
+			 <div id="res"><div>
+		
 	<script>
-var xhr = new XMLHttpRequest();
-xhr.open("POST", "/logout", true);
-const button = document.getElementById('logout');
-button.addEventListener('click', function handleClick() {
-  console.log('element clicked');
-	xhr.send("aaaa");
-});
-
+	function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+	function enviarpost(buttonid){
+	let Data ={Input:document.getElementById(buttonid).value}
+	document.getElementById("res").innerHTML = "<b>Salida</b>";
+        fetch("/buttons",{method: 'post', body: JSON.stringify(Data)})
+};
 	</script>
 </html>

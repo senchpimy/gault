@@ -212,6 +212,7 @@ func main() {
 	http.HandleFunc(UserConfig, Users)
 	http.HandleFunc(Login, login)
 	http.HandleFunc(Logout, logout)
+	http.HandleFunc("/buttons", HandleButtons)
 	http.ListenAndServe(port, context.ClearHandler(http.DefaultServeMux))
 
 }
