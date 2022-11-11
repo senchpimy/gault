@@ -10,9 +10,12 @@ type InputFromPage struct {
     Input string
 }
 
+type Response struct {
+    Output string
+}
+
 func HandleButtons(w http.ResponseWriter, r *http.Request){
-fmt.Println(r.Form)
- decoder := json.NewDecoder(r.Body)
+    decoder := json.NewDecoder(r.Body)
     var t InputFromPage
     err := decoder.Decode(&t)
     if err != nil {
@@ -21,8 +24,13 @@ fmt.Println(r.Form)
     fmt.Println(t.Input)
     switch t.Input{
 	case "logout":
-		http.Redirect(w, r, "https://www.google.com", http.StatusFound)
 		logoutHandler(w,r)
+		loggedOut:= Response{Output:"Done"}
+		byteArray, err := json.Marshal(loggedOut)
+        	if err != nil {fmt.Println(err)}
+		w.Write(byteArray)
+	default:
+		fmt.Println("Input no encontrado")
     }
 }
 

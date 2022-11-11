@@ -44,7 +44,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		pass:=r.FormValue("pass")
 		if GetPasswordConfirmation(name,pass){
 			session, _ := storeOfsessions.Get(r, "session")
-			session.Values["userID"] = name
+			session.Values["authenticated"] = true
 			session.Save(r, w)
 			fmt.Println("correct")
 			//http.Redirect(w, r, "/", http.StatusFound)
@@ -125,9 +125,9 @@ func GetGaultUsers()(foo []User){  //completo
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("*****logoutHandler running*****")
 	session, _ := storeOfsessions.Get(r, "session")
-	delete(session.Values, "userID")
+	session.Values["authenticated"] = false
 	session.Save(r, w)
-	tpl.ExecuteTemplate(w, "login.html", "Logged Out")
+	fmt.Println("Redirigiendo plantilla")
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {

@@ -27,17 +27,21 @@ func errorHandler(w http.ResponseWriter, r *http.Request, PageName string) (foo 
 	if r.URL.Path != PageName {
 		w.WriteHeader(status)
 		if status == http.StatusNotFound {
-			w.Write(readHtmlFromFile("./404.html"))
+		tpl.ExecuteTemplate(w,"404.html",nil)
 	        return true
 		}
 	}
 
 	session, _ := storeOfsessions.Get(r, "session")
-	_, ok := session.Values["userID"]
-	if !ok {
- 		http.Redirect(w, r, Login, http.StatusFound) // http.StatusFound is 302
-        	return true
-	}else{return false}
+	    if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+        //http.Error(w, "Forbidden", http.StatusForbidden)
+	//tpl.ExecuteTemplate(w,"404.html",nil)
+	http.Redirect(w, r, "/login", http.StatusFound)
+        return true
+    }
+	fmt.Println(PageName)
+    return false
+
 }
 
 func readHtmlFromFile(fileName string) ([]byte) {
