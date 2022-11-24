@@ -171,7 +171,7 @@ func SambaConfiguration(w http.ResponseWriter, r *http.Request)  {
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 func SystemOutput(w http.ResponseWriter, r *http.Request)  {
-    if errorHandler(w,r,UserConfig){
+    if errorHandler(w,r,System){
 	return
     }
 		tpl.ExecuteTemplate(w, "status.html", SystemStatus())

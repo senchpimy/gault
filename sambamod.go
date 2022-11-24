@@ -189,6 +189,12 @@ Configs.Mounted=Data.Todos
     if err2 != nil {log.Fatal(err2)}
  }
 
+ func RestartSamba(){
+    cmd2 := exec.Command("systemctl", "restart", "smb")
+    err2 := cmd2.Run()
+    if err2 != nil {log.Fatal(err2)}
+ }
+
  func EnableSamba(){
 	
     cmd := exec.Command("systemctl", "enable", "smb")

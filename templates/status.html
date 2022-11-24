@@ -9,11 +9,34 @@
 		Status
 		<div>
 			Services
-			<ul>
+			<table>
 			{{range .Services}}
-				<li>{{.Service}}</li>
+			<tr>
+			<th>{{.Service}}</th>
+			<th>{{.Status}}</th>
+			<th>{{.Ennabled}}</th>
+			<th><button id="{{.Service}}" value="{{.Service}}">Status</button></th>
+			</tr>
 			{{end}}
-			</ul>
+			</table>
+		</div>
+		<div id="res">
 		</div>
 	</body>
+<script>
+	
+	{{range .Services}}
+
+	document.getElementById("{{.Service}}").onclick = async (e) => {
+		let Data ={Input:document.getElementById("{{.Service}}").value}
+
+            var req = await fetch("/buttons",{method: 'post', body: JSON.stringify(Data)})
+		//then(r => r.json())
+		window.alert(JSON.stringify(req))
+
+            //document.getElementById("res").innerHTML = req.Output
+        }
+
+	{{end}}
+</script>
 </html>

@@ -170,7 +170,6 @@ func AddDiskToConfig(disk string, MountPoint string){
 
 }
 
-
 func VerifyDisk(diskUuid string)  { //Recibe UUID del disco
 	if diskUuid!="null"{
 		dirname:=CreateMountDir()         //Crea una carpeta en donde se va a montar...
