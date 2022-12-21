@@ -35,11 +35,15 @@ func errorHandler(w http.ResponseWriter, r *http.Request, PageName string) (foo 
 		}
 	}
 
-	session, _ := storeOfsessions.Get(r, "session")
-	    if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-        //http.Error(w, "Forbidden", http.StatusForbidden)
-	//tpl.ExecuteTemplate(w,"404.html",nil)
-	http.Redirect(w, r, "/login", http.StatusFound)
+	username:=getUserName(r)
+	fmt.Println(username+"end")
+	if len(username)==0{
+//	session, _ := storeOfsessions.Get(r, "session")
+//	    if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+//        //http.Error(w, "Forbidden", http.StatusForbidden)
+//	//tpl.ExecuteTemplate(w,"404.html",nil)
+	//http.Redirect(w, r, Login, http.StatusFound)
+	http.Redirect(w, r, Login, 302)
         return true
     }
 	fmt.Println(PageName)

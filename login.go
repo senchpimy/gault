@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 	"github.com/gorilla/sessions"
+	"github.com/gorilla/securecookie"
 	// "golang.org/x/crypto/bcrypt"
 )
 
@@ -20,38 +21,75 @@ User_name string
 Password string
 }
 
-func login(w http.ResponseWriter, r *http.Request) {
-	status:=http.StatusNotFound
-	if r.URL.Path != Login {
-	//if r.URL.Path != Login || r.URL.Path != Logout{
-		w.WriteHeader(status)
-		if status == http.StatusNotFound {
-			w.Write(readHtmlFromFile("./404.html"))
-	        return 
+
+var cookieHandler = securecookie.New(
+	securecookie.GenerateRandomKey(64),
+	securecookie.GenerateRandomKey(32))
+
+func getUserName(request *http.Request) (userName string) {
+	if cookie, err := request.Cookie("session"); err == nil {
+		cookieValue := make(map[string]string)
+		if err = cookieHandler.Decode("session", cookie.Value, &cookieValue); err == nil {
+			userName = cookieValue["name"]
 		}
 	}
+	return userName
+}
+
+func setSession(userName string, response http.ResponseWriter) {
+	value := map[string]string{
+		"name": userName,
+	}
+	if encoded, err := cookieHandler.Encode("session", value); err == nil {
+		cookie := &http.Cookie{
+			Name:  "session",
+			Value: encoded,
+			Path:  "/",
+		}
+		http.SetCookie(response, cookie)
+	}
+}
+
+func clearSession(response http.ResponseWriter) {
+	cookie := &http.Cookie{
+		Name:   "",
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	}
+	http.SetCookie(response, cookie)
+}
+
+func login(w http.ResponseWriter, r *http.Request) {
+//	status:=http.StatusNotFound
+//	if r.URL.Path != Login {
+//		w.WriteHeader(status)
+//		if status == http.StatusNotFound {
+//		tpl.ExecuteTemplate(w,"404.html",nil)
+//		}
+//	}
 	switch r.Method {
 	case "GET":
+		fmt.Println("Entrada 15645")
 		tpl.ExecuteTemplate(w, "login.html", nil)
 	case "POST":
+		fmt.Println("Entrada 1")
 		if err := r.ParseForm(); err !=nil{
 			fmt.Fprintf(w,"ParseForm() err: v%",err)
 			return
 		}
 
-		//fmt.Fprintf(w,"Post form website r.postfrom =%v \n",r.PostForm)
 		name:=r.FormValue("name")
 		pass:=r.FormValue("pass")
+		redirectTarget := "/"
 		if GetPasswordConfirmation(name,pass){
-			session, _ := storeOfsessions.Get(r, "session")
-			session.Values["authenticated"] = true
-			session.Save(r, w)
-			fmt.Println("correct")
-			//http.Redirect(w, r, "/", http.StatusFound)
-			tpl.ExecuteTemplate(w, "index.html", nil)
+		setSession(name, w)
+		redirectTarget = "/"
 		}else{
 			fmt.Println("No correct")
+		redirectTarget = "/login"
 		}
+		http.Redirect(w, r, redirectTarget, 302)
 //		sha_512:=sha512.New()
 //		sha_512.Write([]byte(name))
 //		fmt.Fprintf(w,"value = %s\n",name)
@@ -123,14 +161,12 @@ func GetGaultUsers()(foo []User){  //completo
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("*****logoutHandler running*****")
-	session, _ := storeOfsessions.Get(r, "session")
-	session.Values["authenticated"] = false
-	session.Save(r, w)
-	fmt.Println("Redirigiendo plantilla")
+	clearSession(w)
+	http.Redirect(w, r, "/login", 302)
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
-	errorHandler(w,r,Logout)
-	tpl.ExecuteTemplate(w, "logout.html", nil)
+	fmt.Println("salida")
+	//errorHandler(w,r,Logout)
+	http.Redirect(w, r, "/login", 302)
 }

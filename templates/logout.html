@@ -2,22 +2,7 @@
 <!DOCTYPE html>
 <html>
 	<h1>Logout</h1>
-			 <button id="logout" value="logout">Logout</button>
-			 <div id="res"><div>
-		
-	<script>
-	function sleep(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-	}
-	function redirect(){
-		window.location='/login'
-	}
-	document.getElementById("logout").onclick = async (e) => {
-	    let Data ={Input:document.getElementById("logout").value}
-            var req = await fetch("/buttons",{method: 'post', body: JSON.stringify(Data)}).then(r => r.json())
-            document.getElementById("res").innerHTML = req.Output
-	    sleep(1000)
-	    redirect()
-        }
-	</script>
+	<form method="post" action="/logout">
+	    <button type="submit">Logout</button>
+	</form>
 </html>

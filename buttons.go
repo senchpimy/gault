@@ -25,11 +25,10 @@ func HandleButtons(w http.ResponseWriter, r *http.Request){
     switch t.Input{
 	case "logout":
 		logoutHandler(w,r)
-		ServerResponse:= Response{Output:"Done"}
-		byteArray, err := json.Marshal(ServerResponse)
-		w.Write(byteArray)
+		loggedOut:= Response{Output:"Done"}
+		err := json.NewEncoder(w).Encode(loggedOut)
         	if err != nil {fmt.Println(err)}
-		w.Write(byteArray)
+		//w.Write(byteArray)
 
 	case "vsftpd.service":
 		RestartFtp()
