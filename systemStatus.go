@@ -20,33 +20,26 @@ Services []Status
 func StatusFtp()(foo string){
     cmd2 := exec.Command("systemctl", "status", "vsftpd")
     out, _ := cmd2.CombinedOutput()
-    out2:=string(out)
     // if err2 != nil {log.Fatal(err2)}
-    return out2
+    return string(out)
  }
 
 func StatusNfs()(foo string){
     cmd2 := exec.Command("systemctl", "status", "nfs-server")
     out, _ := cmd2.CombinedOutput()
-    out2:=string(out)
-    // if err2 != nil {log.Fatal(err2)}
-    return out2
+    return string(out)
  }
 
 func StatusSSH()(foo string){
     cmd2 := exec.Command("systemctl", "status", "sshd")
     out, _ := cmd2.CombinedOutput()
-    out2:=string(out)
-    // if err2 != nil {log.Fatal(err2)}
-    return out2
+    return string(out)
  }
 
 func StatusSmb()(foo string){
     cmd2 := exec.Command("systemctl", "status", "smb")
     out, _ := cmd2.CombinedOutput()
-    out2:=string(out)
-    // if err2 != nil {log.Fatal(err2)}
-    return out2
+    return string(out)
  }
 
  func StatusFormater(StatusInputPrev string)(foo Status){

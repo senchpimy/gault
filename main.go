@@ -19,6 +19,9 @@ var UserConfig = "/UserConfig"
 var Login = "/login"
 var Logout = "/logout"
 var System = "/System"
+var Buttons = "/buttons"
+var sambaGlobal = "/smbGlobal"
+var nfspage = "/Nfs"
 
 var tpl *template.Template
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,8 +53,8 @@ func readHtmlFromFile(fileName string) ([]byte) {
 }
 
 func INIT()  {
-	CreateParentDir()
-	MountByFile()
+//	CreateParentDir()
+//	MountByFile()
 	fmt.Println("INIT pasado")
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,10 +105,21 @@ func DiscosDisponibles(w http.ResponseWriter, r *http.Request)  {
 
 		diskUuid:=r.FormValue("diskselected")
 		VerifyDisk(diskUuid)
-		Data:=GetDisks()
-		t:=template.Must(template.ParseFiles("./discosDisponibles.html"))
-		t.Execute(w,Data)
+		tpl.ExecuteTemplate(w, "discosDisponibles.html", GetDisks())
 
+	default: fmt.Fprintf(w,"Error")
+	}
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+func SambaGlobal(w http.ResponseWriter, r *http.Request)  {
+    if errorHandler(w,r,sambaGlobal){
+	return
+	}
+	switch r.Method {
+	case "GET":
+		tpl.ExecuteTemplate(w, "sambaGlobal.html", GetAllConfigurations())
+	case "POST":
+		fmt.Println("POST")
 	default: fmt.Fprintf(w,"Error")
 	}
 }
@@ -202,6 +216,24 @@ func Users(w http.ResponseWriter, r *http.Request)  {
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+func NfsPage(w http.ResponseWriter, r *http.Request)  {
+    if errorHandler(w,r,nfspage){return}
+    switch r.Method {
+    case "GET":
+    	tpl.ExecuteTemplate(w, "nfspage.html",ListExports())
+    case "POST":
+		nfs_path:=r.FormValue("Path")
+		nfs_host:=r.FormValue("Host")
+		nfs_permissions:=r.FormValue("Permissions")
+		nfs_options:=r.FormValue("Options")
+		nfs_delete:=r.FormValue("Delete")
+		fmt.Println("nfs delete="+nfs_delete+"end")
+		if nfs_path!=""{CreateExport(nfs_path, nfs_permissions, nfs_host,nfs_options);fmt.Println("Creado")}
+		if nfs_delete!=""{DeleteNfs(nfs_delete);fmt.Println(nfs_delete);fmt.Println("Borrado")}
+    		tpl.ExecuteTemplate(w, "nfspage.html",ListExports())
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 func main() {
 	INIT()
@@ -211,12 +243,14 @@ func main() {
 	http.HandleFunc(discosmontadospage, DiscosMontados)
 	http.HandleFunc(discospage, DiscosDisponibles)
 	http.HandleFunc(sambapage, SambaConfiguration)
+	http.HandleFunc(sambaGlobal, SambaGlobal)
 	http.HandleFunc(System, SystemOutput)
 	//http.HandleFunc(ftpPage, FTPConfiguration)
 	http.HandleFunc(UserConfig, Users)
+	http.HandleFunc(nfspage, NfsPage)
 	http.HandleFunc(Login, login)
 	http.HandleFunc(Logout, logout)
-	http.HandleFunc("/buttons", HandleButtons)
+	http.HandleFunc(Buttons, HandleButtons)
 	http.ListenAndServe(port, context.ClearHandler(http.DefaultServeMux))
 
 }

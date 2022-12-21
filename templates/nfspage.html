@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Samba Configuration</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+		{{range .Shares}}
+			<div>
+				<b>{{.Host}}</b>	
+				<i>{{.Location}}</i>
+				<br>
+			</div>
+		{{end}}
+		<form method="POST">
+			<div>
+			Path:
+			<select name="Path">
+				<option selected="selected" value="">Select a disk</option>
+				{{range .Mounted}}
+				{{if ne .Mem 0 }}
+				<option value="{{.Mount}}">{{.Filesystem}}</option>
+				{{end}}
+				{{end}}
+			</select>
+		</div>
+			<div>Enter Host:<input type="text" name="Host" value="192.168.1."><b>Local host default</b></div>
+			<div>
+				<select name="Permissions">
+					<option value="rw">Read / write</option>
+					<option value="ro">Read only</option>
+				</select>
+			</div>
+			<div>Enter Other Options:<input type="text" name="Host" value=""></div>
+		  	<input type="submit" value="Submit">
+		</form>
+		<form method="POST">
+			<div>
+				Delete a Share
+			</div>
+			<select name="Delete">
+				<option selected="select" value="">Select a Share</option>
+				{{range .Shares}}
+				<option value="{{.Location}}">{{.Location}}</option>
+				{{end}}
+			</select>
+		  	<input type="submit" value="Submit">
+		</form>
+	</body>
+</html>

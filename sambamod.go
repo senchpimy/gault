@@ -12,15 +12,6 @@ import (
 	"github.com/go-ini/ini"
 )
 
-//	GLOBAL
-//host allow: Solo computadoras en la red local
-//workgourp:
-//server string:
-//guest account: cuanta de invitado
-//max log sizie: tamaño en kb de los archivos de log
-//passdb backend:
-//interfaces: configuracion de interfaces
-//wins support: soporte para windows
 
 //	SHARE DEFINITIONS
 // #######todo##########
@@ -45,20 +36,6 @@ Sections []Share
 Mounted []Disk_DF
 }
 
-func WriteToFile(Texto string, File string, location int) {
-	// Read Write Mode
-	file, err := os.OpenFile(File, os.O_RDWR, 0644)
-	
-	if err != nil {
-		log.Fatalf("failed opening file: %s", err)
-	}
-	defer file.Close()
-	
-	len, err := file.WriteString(Texto)
-	if err != nil {
-		log.Fatalf("failed writing to file: %s %s", err,len)
-	}
-}
 
 func ExistSambaConf()  { //completado
 	if _, err := os.Stat("/etc/samba/smb.conf"); errors.Is(err, os.ErrNotExist) {
@@ -95,7 +72,7 @@ func WriteShareConf(bar []string){ //Completado
 	}
 }
 
-func DeleteShare(share string)(error error){
+func DeleteShare(share string)(error error){//Completado
 	var start int = -1
 	var end int = -1
 
@@ -145,17 +122,15 @@ func DeleteShare(share string)(error error){
 
 
 	//cmd,err:=exec.Command( "mv","/etc/samba/smb.conf","/etc/samba/smb.conf.bak").Output()
-	cmd,err:=exec.Command( "mv","./smb.conf","./smb.conf.bak").Output()
+	err = exec.Command( "mv","./smb.conf","./smb.conf.bak").Run()
 	if err != nil {log.Fatal(err)}
-	fmt.Println(cmd)
 	//cmd2,err:=exec.Command( "mv","/etc/samba/smb.conf.after","/etc/samba/smb.conf").Output()
-	cmd2,err:=exec.Command( "mv","./smb.conf.after","./smb.conf").Output()
+	err =exec.Command( "mv","./smb.conf.after","./smb.conf").Run()
 	if err != nil {log.Fatal(err)}
-	fmt.Println(cmd2)
 return nil
 }
 
-func GetAllConfigurations()(foo ConfigurationsStruct){
+func GetAllConfigurations()(foo ConfigurationsStruct){//Completado
 	file,err:=ini.Load("./smb.conf")
 	 if err != nil {
         fmt.Printf("Fail to read file: %v", err)
@@ -200,15 +175,14 @@ Configs.Mounted=Data.Todos
     cmd := exec.Command("systemctl", "enable", "smb")
     err := cmd.Run()
     if err != nil {log.Fatal(err)}
-    cmd2 := exec.Command("systemctl", "enable", "smb")
+    cmd2 := exec.Command("systemctl", "enable", "nmb")
     err2 := cmd2.Run()
     if err2 != nil {log.Fatal(err2)}
  }
 
  func VerifyShare(ReceivedShare Share)  {
 	NewContents:=ReceivedShare.Contents
-	//NewContents2:=NewContents
-	elementes:=[]string{"comment", "guest only", "writable", "valid users", "guest ok", "browseable", "hosts deny", "read only", "wins support", "hosts allow", "LocalsOnly","public"}
+	elementes:=[]string{"comment", "guest only", "writable", "valid users", "guest ok", "browseable", "hosts deny", "read only", "hosts allow","public","wins support"}
 	elementes1:=make([]string,len(elementes))
 		for index,item:= range ReceivedShare.Contents{
 			if item.Variable==""{continue}
@@ -226,7 +200,7 @@ Configs.Mounted=Data.Todos
  }
 
 func AddSambaUser(user string, password string)  {
-	err:=exec.Command("sh","./CreateUser.sh",user, password).Run()
+	err:=exec.Command("sh","./CreateSambaUser.sh",user, password).Run()
     	if err != nil {CreateError(err.Error())}
 }
 
