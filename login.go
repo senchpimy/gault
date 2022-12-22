@@ -70,10 +70,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 //	}
 	switch r.Method {
 	case "GET":
-		fmt.Println("Entrada 15645")
 		tpl.ExecuteTemplate(w, "login.html", nil)
 	case "POST":
-		fmt.Println("Entrada 1")
 		if err := r.ParseForm(); err !=nil{
 			fmt.Fprintf(w,"ParseForm() err: v%",err)
 			return

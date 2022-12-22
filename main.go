@@ -253,6 +253,9 @@ func main() {
 	http.HandleFunc(UserConfig, Users)
 	http.HandleFunc(nfspage, NfsPage)
 	http.HandleFunc(Login, login)
+	http.HandleFunc("/styles/style.css", func(response http.ResponseWriter, request *http.Request) {
+       http.ServeFile(response, request, "templates/styles/style.css")
+    })
 	http.HandleFunc(Logout, logout)
 	http.HandleFunc(Buttons, HandleButtons)
 	http.ListenAndServe(port, context.ClearHandler(http.DefaultServeMux))

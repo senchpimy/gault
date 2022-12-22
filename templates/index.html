@@ -5,23 +5,62 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
-		nav a {margin:1em}
+		h1{
+		font-size:2.4vw;
+		}
+		nav a {
+			margin:0.5em;
+		}
 		a:visited {color: blue;}
+		li a {display:block;width:auto;height:auto;}
+		li{flex:1 0 auto;height:11.4%}
+		body{
+			background-color:#4b0082;
+			font-family:monospace;
+			margin-bottom:0;
+		}
+		ul {
+		  list-style-type: none;
+		  margin: 0;
+		  padding: 0;
+		  width: 100%;
+		  background-color: rgb(132, 139, 35);
+		  height: 100%; /* Full height */
+  		  /*position: absolute; /* Make it stick, even on scroll */
+		  /*overflow: auto;*/
+		}
+		iframe {
+  		  position: absolute; /* Make it stick, even on scroll */
+		  left:16%;
+		  width:83%;
+		  top:10%;
+		  height: 89%; /* Full height */
+		margin-bottom:0;
+		}
+		li:hover {
+		  background-color: rgb(190, 190, 90);
+		}
+		nav {
+			height:89vh;
+			width:15%;
+			margin-bottom:0;
+		}
 		</style>
 	</head>
 	<body>
 		<h1>GAULT</h1>
-		<nav>
-			<ul>
-				<a href="/discos">Discos Montados</a>|
-				<a href="/SambaConfi">Agregar Samba Share</a>|
-				<a href="/smbGlobal">Configuraciones de Samba</a>|
-				<a href="/discosDisponibles">Discos Disponibles</a>|
-				<a href="/UserConfig">Administracion de Usuarios</a>|
-				<a href="/logout">Logout</a>|
-				<a href="/System">System</a>|
-				<a href="/Nfs">NFS</a>|
-			</ul>
-		</nav>
+				<nav>
+					<ul>
+						<li><a href="/discos" target="iframe_content">Discos Montados</a></li>
+						<li><a href="/SambaConfi" target="iframe_content">Agregar Samba Share</a></li>
+						<li><a href="/smbGlobal" target="iframe_content">Configuraciones de Samba</a></li>
+						<li><a href="/discosDisponibles" target="iframe_content">Discos Disponibles</a></li>
+						<li><a href="/UserConfig" target="iframe_content">Administracion de Usuarios</a></li>
+						<li><a href="/System" target="iframe_content">System</a></li>
+						<li><a href="/Nfs" target="iframe_content">NFS</a></li>
+						<li><a href="/logout">Logout</a></li>
+					</ul>
+				</nav>
+				<iframe src="/Nfs" frameBorder="0" name="iframe_content"></iframe>
 	</body>
 </html>
