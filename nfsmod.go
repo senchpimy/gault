@@ -27,8 +27,8 @@ type Nfs struct{
 }
 
 func ListExports() (foo Nfs) { //completado
-	//cmd:=exec.Command("exportfs","-v")
-	cmd:=exec.Command("cat","./exports")
+	cmd:=exec.Command("exportfs","-v")
+	//cmd:=exec.Command("cat","./exports")
     	out, _ := cmd.CombinedOutput()
 	f:=strings.Fields(string(out))
 	fo:=make([]nfsFiles, len(f)/2)
@@ -52,7 +52,8 @@ func ExistexotsConf()  { //completado
 
 func CreateExport(path, permissions, red, options string){
 	// Read Write Mode
-	file, err := os.OpenFile("./exports", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	//file, err := os.OpenFile("./exports", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile("/etc/exports", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	
 	if err != nil {
 		log.Fatalf("failed opening file: %s", err)
@@ -66,14 +67,14 @@ func CreateExport(path, permissions, red, options string){
 }
 
 func DeleteNfs(nfs string)  {
-	data, err := ioutil.ReadFile("./exports")
+	data, err := ioutil.ReadFile("/etc/exports")
 	if err != nil {
 	    log.Fatal(err)
 	}
 	file := string(data)
 	temp := strings.Split(file, "\n")
 
-        newFile, err := os.Create("./exports.after")
+        newFile, err := os.Create("/etc/exports.after")
 	if err != nil {
         log.Fatal(err)
     	}
@@ -89,8 +90,8 @@ func DeleteNfs(nfs string)  {
 		newFile.Write([]byte(item+"\n"))
 	}
 
-	err = exec.Command( "mv","./exports","./exports.bak").Run()
+	err = exec.Command( "mv","/etc/exports","/etc/exports.bak").Run()
 	if err != nil {log.Fatal(err)}
-	err = exec.Command( "mv","./exports.after","./exports").Run()
+	err = exec.Command( "mv","/etc/exports.after","/etc/exports").Run()
 	if err != nil {log.Fatal(err)}
 }

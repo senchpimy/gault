@@ -57,7 +57,7 @@ func CreateConfiguration(Configuration Share)(foo []string){ //Completado
 }
 
 func WriteShareConf(bar []string){ //Completado
-	f, err := os.OpenFile("./smb.conf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile("/etc/samba/smb.conf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 	    log.Fatal(err)
 	}
@@ -76,8 +76,8 @@ func DeleteShare(share string)(error error){//Completado
 	var start int = -1
 	var end int = -1
 
-	 //data, err := ioutil.ReadFile("/etc/samba/smb.conf")
-	 data, err := ioutil.ReadFile("./smb.conf")
+	data, err := ioutil.ReadFile("/etc/samba/smb.conf")
+	 //data, err := ioutil.ReadFile("./smb.conf")
 	if err != nil {
 	    log.Fatal(err)
 	}
@@ -92,8 +92,8 @@ func DeleteShare(share string)(error error){//Completado
 	for index, item := range temp {
 	        if strings.Contains(item, "[",) && index>start{end=index;break}
 	   }
-        //newFile, err := os.Create("/etc/samba/smb.conf.after")
-        newFile, err := os.Create("./smb.conf.after")
+        newFile, err := os.Create("/etc/samba/smb.conf.after")
+        //newFile, err := os.Create("./smb.conf.after")
 	if err != nil {
         log.Fatal(err)
     	}
@@ -121,17 +121,18 @@ func DeleteShare(share string)(error error){//Completado
 	}
 
 
-	//cmd,err:=exec.Command( "mv","/etc/samba/smb.conf","/etc/samba/smb.conf.bak").Output()
-	err = exec.Command( "mv","./smb.conf","./smb.conf.bak").Run()
+	err = exec.Command( "mv","/etc/samba/smb.conf","/etc/samba/smb.conf.bak").Run()
+	//err = exec.Command( "mv","./smb.conf","./smb.conf.bak").Run()
 	if err != nil {log.Fatal(err)}
-	//cmd2,err:=exec.Command( "mv","/etc/samba/smb.conf.after","/etc/samba/smb.conf").Output()
-	err =exec.Command( "mv","./smb.conf.after","./smb.conf").Run()
+	err = exec.Command( "mv","/etc/samba/smb.conf.after","/etc/samba/smb.conf").Run()
+	//err =exec.Command( "mv","./smb.conf.after","./smb.conf").Run()
 	if err != nil {log.Fatal(err)}
 return nil
 }
 
 func GetAllConfigurations()(foo ConfigurationsStruct){//Completado
-	file,err:=ini.Load("./smb.conf")
+	//file,err:=ini.Load("./smb.conf")
+	file,err:=ini.Load("/etc/samba/smb.conf")
 	 if err != nil {
         fmt.Printf("Fail to read file: %v", err)
         os.Exit(1)

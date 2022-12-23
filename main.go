@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	//"github.com/gorilla/sessions"
+	"os"
 	"github.com/gorilla/context"
 )
 
@@ -38,11 +38,6 @@ func errorHandler(w http.ResponseWriter, r *http.Request, PageName string) (foo 
 	username:=getUserName(r)
 	fmt.Println(username+"end")
 	if len(username)==0{
-//	session, _ := storeOfsessions.Get(r, "session")
-//	    if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-//        //http.Error(w, "Forbidden", http.StatusForbidden)
-//	//tpl.ExecuteTemplate(w,"404.html",nil)
-	//http.Redirect(w, r, Login, http.StatusFound)
 	http.Redirect(w, r, Login, 302)
         return true
     }
@@ -57,8 +52,12 @@ func readHtmlFromFile(fileName string) ([]byte) {
 }
 
 func INIT()  {
-//	CreateParentDir()
-//	MountByFile()
+	CreateParentDir()
+	MountByFile()
+	if os.Geteuid() != 0 {
+		fmt.Println("The program Needs to be run by root")
+		os.Exit(0)
+	}
 	fmt.Println("INIT pasado")
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////

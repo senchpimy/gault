@@ -5,50 +5,50 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
-		h1{
-		font-size:2.4vw;
-		}
-		nav a {
-			margin:0.5em;
-		}
-		a:visited {color: blue;}
-		li a {display:block;width:auto;height:auto;}
-		li{flex:1 0 auto;height:11.4%}
-		body{
-			background-color:#4b0082;
-			font-family:monospace;
-			margin-bottom:0;
-		}
-		ul {
-		  list-style-type: none;
-		  margin: 0;
-		  padding: 0;
-		  width: 100%;
-		  background-color: rgb(132, 139, 35);
-		  height: 100%; /* Full height */
-  		  /*position: absolute; /* Make it stick, even on scroll */
-		  /*overflow: auto;*/
-		}
-		iframe {
-  		  position: absolute; /* Make it stick, even on scroll */
-		  left:16%;
-		  width:83%;
-		  top:10%;
-		  height: 89%; /* Full height */
-		margin-bottom:0;
-		}
-		li:hover {
-		  background-color: rgb(190, 190, 90);
-		}
-		nav {
-			height:89vh;
-			width:15%;
-			margin-bottom:0;
-		}
-		</style>
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color:#4b0082;
+}
+.titulo {
+height:9%;
+}
+nav {
+  width: 17%; /* Set the width of the nav element */
+  height: 93vh;
+  background-color:#1C9C1E;
+  color: #ffffff; /* Set the text color to white */
+}
+
+nav ul {
+  list-style: none; /* Remove the default list styling */
+  margin: 0; /* Remove the default margin */
+  padding: 0; /* Remove the default padding */
+}
+
+nav a {
+  display: block; /* Display the links as blocks */
+  padding: 15px; /* Add some padding around the links */
+  color:#4b0082;
+  text-decoration: none; /* Remove the default text decoration */
+  font-size: 16px; /* Increase the font size */
+  transition: all 0.3s ease-out; /* Add a transition effect */
+}
+
+nav a:hover {
+  background-color:#32cd32;
+}
+iframe {
+position: absolute; /* Make it stick, even on scroll */
+left:18.5%;
+width:83%;
+top:5%;
+height: 93%; /* Full height */
+margin-bottom:0;
+}
+	</style>
 	</head>
 	<body>
-		<h1>GAULT</h1>
+		<div class="titulo">GAULT</div>
 				<nav>
 					<ul>
 						<li><a href="/discos" target="iframe_content">Discos Montados</a></li>
