@@ -102,7 +102,8 @@ func Umount(disco string)  {
 }
 
 func GetDisks() (foo System_lsblk){
-	cmd := exec.Command("lsblk", "-J", "-oNAME,SIZE,TYPE,MOUNTPOINTS,RM,UUID","-l")
+	//cmd := exec.Command("lsblk", "-J", "-oNAME,SIZE,TYPE,MOUNTPOINTS,RM,UUID","-l") arch
+	cmd := exec.Command("lsblk", "-J", "-oNAME,SIZE,TYPE,MOUNTPOINT,RM,UUID","-l")
 	tmp, _ := cmd.CombinedOutput()
 	var System System_lsblk
 	json.Unmarshal(tmp, &System)

@@ -52,12 +52,12 @@ func readHtmlFromFile(fileName string) ([]byte) {
 }
 
 func INIT()  {
-	CreateParentDir()
-	MountByFile()
 	if os.Geteuid() != 0 {
 		fmt.Println("The program Needs to be run by root")
 		os.Exit(0)
 	}
+	CreateParentDir()
+	MountByFile()
 	fmt.Println("INIT pasado")
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
