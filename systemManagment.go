@@ -89,7 +89,10 @@ func FormaterDiskInfo(foo [][]string)(bar Format_DF){
 }
 
 func Mount(disco string, MountPoint string)  {
-	_,err:=exec.Command( "mount","/dev/"+disco,MountPoint).Output()
+	test,err:=exec.Command( "mount","/dev/"+disco,MountPoint).Output()
+	fmt.Println( "mount","/dev/"+disco,MountPoint)
+	fmt.Println(test)
+	fmt.Println(err.Error())
 	if err != nil {CreateError(string(err.Error()))}
 }
 
@@ -100,22 +103,23 @@ func Umount(disco string)  {
 
 func GetDisks() (foo System_lsblk){
 	cmd := exec.Command("lsblk", "-J", "-oNAME,SIZE,TYPE,MOUNTPOINTS,RM,UUID","-l")
-	content, _ := cmd.CombinedOutput()
+	tmp, _ := cmd.CombinedOutput()
 	var System System_lsblk
-	json.Unmarshal(content, &System)
+	json.Unmarshal(tmp, &System)
 	return System
 }
 
 func CreateParentDir(){
-	cmd := exec.Command("mkdir", "/run/media/gault", "-p")
-	cmd.CombinedOutput()
+	exec.Command("mkdir", "/run/media/gault", "-p").Run()
 }
 
-func CreateMountDir() string{
-	dirname:=randSeq(10)
-	_, err := exec.Command("mkdir", "/run/media/gault/"+dirname, "-p").Output()
-	fmt.Println(err)
-	return "/run/media/gault/"+dirname
+func CreateMountDir(dirname string) string{
+	//dirname:=randSeq(10)
+	err := exec.Command("mkdir", dirname, "-p").Run()
+	if err!=nil{
+		log.Fatal(err)
+	}
+	return dirname
 }
 
 func MountByFile(){
@@ -136,6 +140,9 @@ func MountByFile(){
 	        Disks[index].MountPoint=data_from_line[1]
 	        Disks[index].Uuid=data_from_line[0]
 	
+	}
+	for index := range Disks{
+		CreateMountDir(Disks[index].MountPoint)         //Crea una carpeta en donde se va a montar...
 	}
 	CurrentDisksConnected:=GetDisks()
 	for _,disk:= range CurrentDisksConnected.Blockdevices{
@@ -173,7 +180,8 @@ func AddDiskToConfig(disk string, MountPoint string){
 
 func VerifyDisk(diskUuid string)  { //Recibe UUID del disco
 	if diskUuid!="null"{
-		dirname:=CreateMountDir()         //Crea una carpeta en donde se va a montar...
+		dirname:="/run/media/gault/"+randSeq(10)
+		dirname=CreateMountDir(dirname)         //Crea una carpeta en donde se va a montar...
 		by,_:=ioutil.ReadFile("./disks")  //...esta carpeta es unica a la uuid del disco
 		file:=string(by)            
 		fmt.Println(string(by))
