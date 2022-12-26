@@ -19,20 +19,16 @@ Gault is a OpenMediaVault alternative written in go
 	- useradd
 
 
-### Currently Working in a login page and support for nfs and ftp
+### Currently Working in support for ftp
 
 
 To Do
 
-Edit samba global
 login
-
-nfs
 
 ftp
 
 reload samba and activate samba
-
 
 Error mesagges in page
 

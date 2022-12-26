@@ -56,7 +56,7 @@ func INIT()  {
 	MountByFile()
 	if os.Geteuid() != 0 {
 		fmt.Println("The program Needs to be run by root")
-		os.Exit(0)
+		//os.Exit(0)
 	}
 	fmt.Println("INIT pasado")
 }
