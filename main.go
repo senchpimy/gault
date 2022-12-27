@@ -57,6 +57,21 @@ func INIT()  {
 		os.Exit(0)
 	}
 	CreateParentDir()
+	for _,filename := range []string{"/usr/local/gault/disks","/usr/local/gault/errorlog","/usr/local/gault/passwords"}{ //Agregar contraseña
+		_, err := os.Stat(filename)
+		if os.IsNotExist(err) {
+			if filename=="/usr/local/gault/passwords"{
+				fmt.Println("No users/passwords file check the git for the defaul")
+				os.Exit(0)
+			}
+			file, err := os.Create(filename)
+			if err != nil {
+				fmt.Println("Error creating file:", err)
+				fmt.Printf("FIle: %s",filename )
+				os.Exit(0)
+			}
+			defer file.Close()
+	}}
 	MountByFile()
 	fmt.Println("INIT pasado")
 }

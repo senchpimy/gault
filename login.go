@@ -137,7 +137,7 @@ func GetPasswordConfirmation(User string,Password string)(foo bool){
 }
 
 func GetGaultUsers()(foo []User){  //completo
-    file, err := os.Open("./passwords")
+    file, err := os.Open("/usr/local/gault/passwords")
     if err != nil {
         log.Fatal(err)
     }
@@ -165,6 +165,5 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 func logout(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("salida")
-	//errorHandler(w,r,Logout)
 	http.Redirect(w, r, "/login", 302)
 }

@@ -1,5 +1,7 @@
-go get github.com/gorilla/sessions
-go get github.com/go-ini/ini
-go get github.com/gorilla/context
-go get 	golang.org/x/crypto/bcrypt
-go bulid .
+build:
+	go build .
+install:
+	go build .
+	chmod +x gault
+	cp gault /usr/bin/gault
+	cp passwords /usr/local/gault/passwords

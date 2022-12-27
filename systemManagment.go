@@ -112,6 +112,7 @@ func GetDisks() (foo System_lsblk){
 
 func CreateParentDir(){
 	exec.Command("mkdir", "/run/media/gault", "-p").Run()
+	exec.Command("mkdir", "/usr/local/gault", "-p").Run()
 }
 
 func CreateMountDir(dirname string) string{
@@ -124,7 +125,7 @@ func CreateMountDir(dirname string) string{
 }
 
 func MountByFile(){
-	file, err := os.Open("./disks")
+	file, err := os.Open("/usr/local/gault/disks")
 	if err != nil {
 	    log.Fatal(err)
 	}
@@ -165,7 +166,7 @@ func MountByUUID(uuid string, dir string){
 }
 
 func AddDiskToConfig(disk string, MountPoint string){
-	f, err := os.OpenFile("./disks", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile("/usr/local/gault/disks", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 	    log.Fatal(err)
 	}
@@ -183,7 +184,7 @@ func VerifyDisk(diskUuid string)  { //Recibe UUID del disco
 	if diskUuid!="null"{
 		dirname:="/run/media/gault/"+randSeq(10)
 		dirname=CreateMountDir(dirname)         //Crea una carpeta en donde se va a montar...
-		by,_:=ioutil.ReadFile("./disks")  //...esta carpeta es unica a la uuid del disco
+		by,_:=ioutil.ReadFile("/usr/local/gault/disks")  //...esta carpeta es unica a la uuid del disco
 		file:=string(by)            
 		fmt.Println(string(by))
 		if strings.Contains(file, diskUuid){
