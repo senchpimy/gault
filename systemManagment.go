@@ -72,19 +72,18 @@ func randSeq(n int) string {
 func FormaterDiskInfo(foo [][]string)(bar Format_DF){
 	listu:=make([]Disk_DF,len(foo))
 	for i:=0;i<len(foo);i++{
-		if foo[i][0]=="tmpfs" || foo[i][0]=="dev" || foo[i][0]=="run" || foo[i][5]=="/"{
+		if foo[i][0]=="tmpfs" || foo[i][0]=="dev" || foo[i][0]=="run" || foo[i][5]=="/edf"{
 			continue
 		}else{
-		listu[i].Filesystem=foo[i][0]
-		listu[i].Mem,_=strconv.Atoi(foo[i][1])
-		listu[i].Used,_=strconv.Atoi(foo[i][2])
-		listu[i].Avaible,_=strconv.Atoi(foo[i][3])
-		listu[i].UsePercent=foo[i][4]
-		listu[i].Mount=foo[i][5]
+			listu[i].Filesystem=foo[i][0]
+			listu[i].Mem,_=strconv.Atoi(foo[i][1])
+			listu[i].Used,_=strconv.Atoi(foo[i][2])
+			listu[i].Avaible,_=strconv.Atoi(foo[i][3])
+			listu[i].UsePercent=foo[i][4]
+			listu[i].Mount=foo[i][5]
 		}
 	}
 	ret:=Format_DF{Title:"Discos",Todos:listu}
-	fmt.Println("listo")
 	return ret
 }
 
@@ -93,12 +92,13 @@ func Mount(disco string, MountPoint string)  {
 	fmt.Println( "mount","/dev/"+disco,MountPoint)
 	fmt.Println(test)
 	fmt.Println(err.Error())
-	if err != nil {CreateError(string(err.Error()))}
+	//if err != nil {CreateError(string(err.Error()))}
 }
 
 func Umount(disco string)  {
 	_,err:=exec.Command("umount", disco).Output()
-	if err != nil {CreateError(string(err.Error()))}
+	if err != nil {fmt.Println(err)}
+	//if err != nil {CreateError(string(err.Error()))}
 }
 
 func GetDisks() (foo System_lsblk){

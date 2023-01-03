@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"strconv"
 	"net/http"
 	"strings"
 
 	"os"
 	"github.com/gorilla/context"
+	"github.com/shirou/gopsutil/cpu"
 )
 
 var mainpage = "/"
@@ -22,8 +24,14 @@ var System = "/System"
 var Buttons = "/buttons"
 var sambaGlobal = "/smbGlobal"
 var nfspage = "/Nfs"
+var dashboard = "/dashboard"
 
 var tpl *template.Template
+
+type dashboardInfo struct{
+	CpuUsage []float64
+	DisksUsage []int
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 func errorHandler(w http.ResponseWriter, r *http.Request, PageName string) (foo bool){
 	status:=http.StatusNotFound
@@ -61,7 +69,7 @@ func INIT()  {
 		_, err := os.Stat(filename)
 		if os.IsNotExist(err) {
 			if filename=="/usr/local/gault/passwords"{
-				fmt.Println("No users/passwords file check the git for the defaul")
+				fmt.Println("No users/passwords file check the git for the default")
 				os.Exit(0)
 			}
 			file, err := os.Create(filename)
@@ -252,12 +260,39 @@ func NfsPage(w http.ResponseWriter, r *http.Request)  {
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+func Dashboard(w http.ResponseWriter, r *http.Request)  {
+	if errorHandler(w,r,dashboard){return}
+
+
+	DasboardData:=dashboardInfo{}
+	cpuUsage, err := cpu.Percent(0, true)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	DasboardData.CpuUsage=cpuUsage
+	tmp:=FormaterDiskInfo(GetInfoSystem()).Todos
+	tmp2:=make([]int,0)
+	for _,i := range tmp{
+		if len(i.UsePercent)!=0{
+			value,_:=strconv.Atoi(i.UsePercent[:len(i.UsePercent)-1])
+			tmp2=append(tmp2,value)
+		}
+	}
+	DasboardData.DisksUsage=tmp2
+
+	tpl.ExecuteTemplate( w,"dashboard.html",DasboardData)
+	}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 func main() {
 	INIT()
 	port := ":3000"
+	fmt.Println("Startting on " + port)
 	tpl, _ = template.ParseGlob("templates/*.html")
 	http.HandleFunc(mainpage, indexHandler)
+	http.HandleFunc(dashboard, Dashboard)
 	http.HandleFunc(discosmontadospage, DiscosMontados)
 	http.HandleFunc(discospage, DiscosDisponibles)
 	http.HandleFunc(sambapage, SambaConfiguration)
@@ -268,8 +303,7 @@ func main() {
 	http.HandleFunc(nfspage, NfsPage)
 	http.HandleFunc(Login, login)
 	http.HandleFunc("/styles/style.css", func(response http.ResponseWriter, request *http.Request) {
-       http.ServeFile(response, request, "templates/styles/style.css")
-    })
+	http.ServeFile(response, request, "templates/styles/style.css")})
 	http.HandleFunc(Logout, logout)
 	http.HandleFunc(Buttons, HandleButtons)
 	http.ListenAndServe(port, context.ClearHandler(http.DefaultServeMux))

@@ -49,11 +49,11 @@ func StatusSmb()(foo string){
 	if len(strings.Split(StatusInput[2]," "))>10{
 		SecondLine:=strings.Split(StatusInput[2]," ")
 		foo.Uptime=SecondLine[10]+" "+SecondLine[11]
-		foo.Status=SecondLine[6]
+		foo.Status=SecondLine[5]
 	}else{
 		foo.Uptime="Disabled"
 		SecondLine:=strings.Split(StatusInput[2]," ")
-		foo.Status=SecondLine[6]
+		foo.Status=SecondLine[5]
 	}
 
 	IsEnabled:=strings.Split(StatusInput[1],";")[1]

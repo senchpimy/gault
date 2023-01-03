@@ -1,56 +1,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title></title>
+		<title>GAULT</title>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<style>
-body {
-  font-family: 'Roboto', sans-serif;
-  background-color:#4b0082;
-}
-.titulo {
-height:9%;
-}
-nav {
-  width: 17%; /* Set the width of the nav element */
-  height: 93vh;
-  background-color:#1C9C1E;
-  color: #ffffff; /* Set the text color to white */
-}
-
-nav ul {
-  list-style: none; /* Remove the default list styling */
-  margin: 0; /* Remove the default margin */
-  padding: 0; /* Remove the default padding */
-}
-
-nav a {
-  display: block; /* Display the links as blocks */
-  padding: 15px; /* Add some padding around the links */
-  color:#4b0082;
-  text-decoration: none; /* Remove the default text decoration */
-  font-size: 16px; /* Increase the font size */
-  transition: all 0.3s ease-out; /* Add a transition effect */
-}
-
-nav a:hover {
-  background-color:#32cd32;
-}
-iframe {
-position: absolute; /* Make it stick, even on scroll */
-left:18.5%;
-width:83%;
-top:5%;
-height: 93%; /* Full height */
-margin-bottom:0;
-}
-	</style>
-	</head>
+		    <link rel="stylesheet" type="text/css" href="style.css">
+			</head>
 	<body>
-		<div class="titulo">GAULT</div>
 				<nav>
 					<ul>
+						<li><a href="/dashboard" target="iframe_content">Dashboard</a></li>
 						<li><a href="/discos" target="iframe_content">Discos Montados</a></li>
 						<li><a href="/SambaConfi" target="iframe_content">Agregar Samba Share</a></li>
 						<li><a href="/smbGlobal" target="iframe_content">Configuraciones de Samba</a></li>
@@ -61,6 +20,6 @@ margin-bottom:0;
 						<li><a href="/logout">Logout</a></li>
 					</ul>
 				</nav>
-				<iframe src="/Nfs" frameBorder="0" name="iframe_content"></iframe>
+				<iframe src="/dashboard" frameBorder="0" name="iframe_content"></iframe>
 	</body>
 </html>

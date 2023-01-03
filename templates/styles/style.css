@@ -184,7 +184,7 @@ DEMO
   font-size: 16px;
   font-weight: bold;
   color: #ffffff;
-  background-color: #4b0082;
+  background-color: #4d79ff;
   border-radius: 5px;
   box-shadow: 0 5px 10px rgba(0,0,0,0.1);
   cursor: pointer;
@@ -192,26 +192,26 @@ DEMO
 }
 
 .button:hover {
-  background-color: #9400d3;
+  background-color: #4d4dff;
   box-shadow: 0 5px 10px rgba(0,0,0,0.3);
   transform: translateY(-2px);
 }
 
 .button:active {
-  background-color: #9400d3;
+  background-color: #fafafa ;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   transform: translateY(2px);
 }
 
 body {
-  background-color: rgb(75,0,120);
+  background-color:#264080;
 }
 
 .login-container {
   width: 500px; /* Set the width of the container */
   margin: 0 auto; /* Center the container horizontally */
   padding: 30px; /* Add some padding around the content */
-  background-color: #4b0082; /* Set the background color to a dark purple shade */
+  background-color: #5c5c5c;
   border-radius: 5px; /* Round the corners of the container */
   box-shadow: 0 5px 10px rgba(0,0,0,0.1); /* Add a subtle box shadow */
 }

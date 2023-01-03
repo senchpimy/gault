@@ -1,11 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>404 Not found</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-	</head>
-	<body>
-		<h1>Page not found</h1>
-	</body>
+<html>
+<head>
+	<title>404 Page Not Found</title>
+	<style>
+		body {
+			font-family: sans-serif;
+			color: #999;
+			background-color:#264080;
+		}
+		.container {
+			max-width: 800px;
+			margin: 0 auto;
+			text-align: center;
+		}
+		h1 {
+			font-size: 4em;
+			margin: 1em 0;
+			color: #4d79ff;
+		}
+		p {
+			font-size: 1.5em;
+			margin: 1em 0;
+		}
+		a {
+			color: #4d79ff;
+			text-decoration: none;
+			border-bottom: 1px solid #4d79ff;
+			transition: all 0.2s ease-in-out;
+		}
+		a:hover {
+			color: #333;
+			border-bottom-color: #333;
+		}
+		.peek {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			width: 120vh;
+			height: 120vh;
+			background-color: #4d79ff;
+			clip-path: circle(60vh at 100% 100%);
+		}
+		.pseek:before{
+		}
+	</style>
+</head>
+<body>
+	<div class="peek"></div>
+	<div class="container">
+		<h1>404</h1>
+		<p>Oops, it looks like the page you're looking for doesn't exist.</p>
+		<p>You can go back to the <a href="/">homepage</a> or try searching for what you're looking for.</p>
+	</div>
+</body>
 </html>
+
